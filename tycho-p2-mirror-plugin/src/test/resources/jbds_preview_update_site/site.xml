@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+
+   	<description>
+      JBoss Developer Studio 4.0.0 'Technology Preview' Update Site / p2 Repo 
+   	</description>
+
+	<feature url="features/org.jboss.tools.bpel.feature_1.0.0.v20101105-1511-Beta2.jar" id="org.jboss.tools.bpel.feature" version="1.0.0.v20101105-1511-Beta2">
+		<category name="AllTools" />
+	</feature>
+   
+	<category-def name="AllTools" label="All Features">
+		<description>
+			Contains ALL available features.
+      </description>
+	</category-def>
+
+</site>

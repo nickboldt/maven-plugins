@@ -17,31 +17,31 @@ public final class MirrorMojo extends
 	private static String ARTIFACT_MIRROR_APP_NAME = "org.eclipse.equinox.p2.artifact.repository.mirrorApplication";
 	private static String METADATA_MIRROR_APP_NAME = "org.eclipse.equinox.p2.metadata.repository.mirrorApplication";
 
-	private String sourceDir;
-	public String getSourceDir() {
-		return sourceDir;
-	}
-
-	public void setSourceDir(String sourceDir) {
-		this.sourceDir = sourceDir;
-	}
-
-	public String getTargetDir() {
-		return targetDir;
-	}
-
-	public void setTargetDir(String targetDir) {
-		this.targetDir = targetDir;
-	}
-
-	private String targetDir;
+	private String sourceDirectory;
+	private String targetDirectory;
 	
+	public String getSourceDirectory() {
+		return sourceDirectory;
+	}
+
+	public void setSourceDirectory(String sourceDirectory) {
+		this.sourceDirectory = sourceDirectory;
+	}
+
+	public String getTargetDirectory() {
+		return targetDirectory;
+	}
+
+	public void setTargetDirectory(String targetDirectory) {
+		this.targetDirectory = targetDirectory;
+	}
+
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		List<String> contentArgs = new ArrayList<String>();
 		contentArgs.add("-source");
-		contentArgs.add(sourceDir);
+		contentArgs.add(sourceDirectory);
 		contentArgs.add("-destination");
-		contentArgs.add(targetDir);
+		contentArgs.add(targetDirectory);
 		try {
 			executeMirrorApplication(ARTIFACT_MIRROR_APP_NAME,
 					(String[]) contentArgs.toArray(new String[contentArgs.size()]));

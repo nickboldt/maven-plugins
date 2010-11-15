@@ -1,29 +1,26 @@
 package org.jboss.tycho.plugins.p2.mirror;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.io.IOException;
 
 import org.codehaus.plexus.util.FileUtils;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 public class MirrorMojoUnitTest {
 	private File tempDir;
 
-    private File sourceDirectory;
+    private String sourceDirectory;
 
-    private File targetDirectory;
+    private String targetDirectory;
 
 	@Before
 	public void setUp() throws IOException {
 		tempDir = createTempDir(getClass().getSimpleName());
-        sourceDirectory = new File( tempDir, "source" );
-        sourceDirectory.mkdirs();
-        targetDirectory = new File( tempDir, "target" );
-        targetDirectory.mkdirs();
+        sourceDirectory = tempDir.toString() + "source";
+        targetDirectory = tempDir.toString() + "target";
 	}
 
 	@After
@@ -32,8 +29,14 @@ public class MirrorMojoUnitTest {
 	}
 
 	@Test
-	public void testTrue() throws Exception {
-		assertTrue(true);
+	public void testMirror() throws Exception {
+		MirrorMojo mm = new MirrorMojo();
+
+		FileUtils.copyDirectory(new File("src/main/resources/jbds_preview_update_site"), new File(sourceDirectory));
+		mm.setSourceDirectory(sourceDirectory);
+		mm.setTargetDirectory(targetDirectory);
+		mm.execute();
+		Assert.assertTrue(true);
 	}
 
 	private File createTempDir(String prefix) throws IOException {
