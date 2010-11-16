@@ -13,6 +13,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
+import org.apache.tools.ant.taskdefs.condition.IsFailure;
 import org.codehaus.plexus.util.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -21,14 +22,18 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * Generate a source feature from every other feature found in the tree
+ * Check for non-unique GAVs and apply best practices to G:A:V naming
  * 
- * @goal
+ * @goal run
  * 
- * @phase process-sources
+ * @phase validate
+ * 
  */
 public class UniqueGAVMojo extends AbstractMojo {
 
+	/**
+	 * @parameter expression="${sourceDirectory}" default-value="."
+	 */
 	private File sourceDirectory;
 
 	public File getSourceDirectory() {
@@ -104,6 +109,7 @@ public class UniqueGAVMojo extends AbstractMojo {
 					String version = "";
 					String name = "";
 					Node groupIdNode = null;
+					Node artifactIdNode = null;
 					for (int j = 0; j < nl.getLength(); j++) {
 						Node n = nl.item(j);
 						if (n.getNodeName() == "groupId") {
@@ -111,11 +117,77 @@ public class UniqueGAVMojo extends AbstractMojo {
 							groupIdNode = n;
 						} else if (n.getNodeName() == "artifactId") {
 							artifactId = n.getTextContent();
+							artifactIdNode = n;
 						} else if (n.getNodeName() == "version") {
 							version = n.getTextContent();
 						} else if (n.getNodeName() == "name") {
 							name = n.getTextContent();
 						}
+					}
+
+					boolean writeToFile = false;
+					// remove .plugins or .features from groupId
+					if (groupId.endsWith(".plugins")
+							|| groupId.endsWith(".features")
+							|| groupId.endsWith(".tests")) {
+						if (groupId.endsWith(".plugins")) {
+							groupId = groupId.replace(".plugins", "");
+							groupIdNode.setTextContent(groupId);
+						}
+						if (groupId.endsWith(".features")) {
+							groupId = groupId.replace(".features", "");
+							groupIdNode.setTextContent(groupId);
+						}
+						if (groupId.endsWith(".tests")) {
+							groupId = groupId.replace(".tests", "");
+							groupIdNode.setTextContent(groupId);
+						}
+						writeToFile = true;
+					}
+					String thisFolder = pom.replaceFirst(
+							".+/([^/]+)/pom\\.xml", "$1");
+					String parentFolder = pom.replaceFirst(
+							".+/([^/]+)/([^/]+)/pom\\.xml", "$1");
+					// if (doInfo) {
+					// log.info("In folder: " + parentFolder + "/"
+					// + thisFolder);
+					// }
+					if (artifactId.equals("features")) {
+						artifactId = groupId + ".features";
+						artifactIdNode.setTextContent(artifactId);
+						writeToFile = true;
+					} else if (artifactId.equals(parentFolder + ".features")) {
+						artifactId = groupId + "." + parentFolder + ".features";
+						artifactIdNode.setTextContent(artifactId);
+						writeToFile = true;
+					} else if (artifactId.equals("plugins")) {
+						artifactId = groupId + ".plugins";
+						artifactIdNode.setTextContent(artifactId);
+						writeToFile = true;
+					} else if (artifactId.equals(parentFolder + ".plugins")) {
+						artifactId = groupId + "." + parentFolder + ".plugins";
+						artifactIdNode.setTextContent(artifactId);
+						writeToFile = true;
+					} else if (artifactId.equals("tests")) {
+						artifactId = groupId + ".tests";
+						artifactIdNode.setTextContent(artifactId);
+						writeToFile = true;
+					} else if (artifactId.equals(parentFolder + "tests")) {
+						artifactId = groupId + "." + parentFolder + ".tests";
+						artifactIdNode.setTextContent(artifactId);
+						writeToFile = true;
+					} else if (artifactId.equals("site")) {
+						artifactId = groupId + ".site";
+						artifactIdNode.setTextContent(artifactId);
+						writeToFile = true;
+					} else if (artifactId.equals(parentFolder + ".site")) {
+						artifactId = groupId + "." + parentFolder + ".site";
+						artifactIdNode.setTextContent(artifactId);
+						writeToFile = true;
+					}
+
+					if (writeToFile) {
+						writeDomToFile(pomFile.toString(), dom);
 					}
 
 					// check for best practices
@@ -145,20 +217,6 @@ public class UniqueGAVMojo extends AbstractMojo {
 					// }
 					// }
 
-					// remove .plugins or .features from groupId
-					if (groupId.endsWith(".plugins")
-							|| groupId.endsWith(".features")) {
-						if (groupId.endsWith(".plugins")) {
-							groupIdNode.setTextContent(groupId.replace(
-									".plugins", ""));
-						}
-						if (groupId.endsWith(".features")) {
-							groupIdNode.setTextContent(groupId.replace(
-									".features", ""));
-						}
-						writeDomToFile(pomFile.toString(), dom);
-					}
-
 					// check for duplicates
 					String GAVkey = groupId + ":" + artifactId + ":" + version;
 					if (!GAV.containsKey(GAVkey)) {
@@ -174,6 +232,7 @@ public class UniqueGAVMojo extends AbstractMojo {
 					}
 
 				} catch (SAXException e) {
+					System.out.println("Error parsing pom file " + pom);
 					e.printStackTrace();
 				} catch (ParserConfigurationException e) {
 					e.printStackTrace();

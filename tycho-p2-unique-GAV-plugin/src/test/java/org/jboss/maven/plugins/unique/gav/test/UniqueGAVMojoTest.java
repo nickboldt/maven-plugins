@@ -16,6 +16,9 @@ public class UniqueGAVMojoTest {
 
 	private File tempDir;
 
+	/**
+	 * @parameter
+	 */
 	private File sourceDirectory;
 
 	UniqueGAVMojo uniq;
@@ -25,7 +28,9 @@ public class UniqueGAVMojoTest {
 	@Before
 	public void setUp() throws IOException {
 		tempDir = createTempDir(getClass().getSimpleName());
-		sourceDirectory = new File("/home/nboldt/tru/deltacloud");
+		if (sourceDirectory == null) {
+			sourceDirectory = new File("/home/nboldt/tru/jmx/");
+		}
 		sourceDirectory.mkdirs();
 		uniq = new UniqueGAVMojo();
 		uniq.setSourceDirectory(sourceDirectory);
