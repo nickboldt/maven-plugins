@@ -18,16 +18,16 @@ To use this plugin in your own project:
                 </execution>
             </executions>
             <configuration>
-	           	<!-- more output w/ verbose; default false (no output == nothing to fix) -->
-                <verbose>true</verbose>
+				<!-- more output w/ verbose; default false (no output == nothing to fix) -->
+				<verbose>true</verbose>
 
-                <!-- three types of output to check for; default only errors=true -->
+				<!-- three types of output to check for; default only errors=true -->
 				<doInfo>true</doInfo>
 				<doWarn>true</doWarn>
 				<doError>true</doError>
 
 				<!-- where to check; default this folder (".") -->
-                <sourceDirectory>.</sourceDirectory>
+				<sourceDirectory>.</sourceDirectory>
             </configuration>
 	    </plugin>
     </plugins>
