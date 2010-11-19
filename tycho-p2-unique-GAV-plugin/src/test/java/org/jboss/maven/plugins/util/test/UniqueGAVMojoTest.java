@@ -1,4 +1,4 @@
-package org.jboss.maven.plugins.unique.gav.test;
+package org.jboss.maven.plugins.util.test;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,7 +6,7 @@ import java.io.IOException;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.codehaus.plexus.util.FileUtils;
-import org.jboss.tycho.plugins.unique.gav.UniqueGAVMojo;
+import org.jboss.maven.plugins.util.UniqueGAVMojo;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

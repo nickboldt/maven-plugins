@@ -1,4 +1,4 @@
-package org.jboss.tycho.plugins.unique.gav;
+package org.jboss.maven.plugins.util;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -32,6 +32,15 @@ import org.xml.sax.SAXException;
 public class UniqueGAVMojo extends AbstractMojo {
 
 	/**
+	 * @parameter expression="${doWarn}" default-value="false"
+	 */
+	private boolean verbose = false;
+
+	public void setVerbose(boolean verbose) {
+		this.verbose = verbose;
+	}
+
+	/**
 	 * @parameter expression="${sourceDirectory}" default-value="."
 	 */
 	private File sourceDirectory;
@@ -50,18 +59,27 @@ public class UniqueGAVMojo extends AbstractMojo {
 		return GAV;
 	}
 
+	/**
+	 * @parameter expression="${doInfo}" default-value="false"
+	 */
 	private boolean doInfo = false;
 
 	public void setDoInfo(boolean doInfo) {
 		this.doInfo = doInfo;
 	}
 
+	/**
+	 * @parameter expression="${doWarn}" default-value="false"
+	 */
 	private boolean doWarn = false;
 
 	public void setDoWarn(boolean doWarn) {
 		this.doWarn = doWarn;
 	}
 
+	/**
+	 * @parameter expression="${doError}" default-value="true"
+	 */
 	private boolean doError = true;
 
 	public void setDoError(boolean doError) {
@@ -73,6 +91,9 @@ public class UniqueGAVMojo extends AbstractMojo {
 
 		// run somewhere in maven build tree, sourceDirectory
 		setSourceDirectory(sourceDirectory);
+		if (verbose) {
+			log.info("Checking GAVs in " + sourceDirectory);
+		}
 
 		/*
 		 * find all pom.xml files in tree load pom.xml files and store filename
@@ -191,8 +212,8 @@ public class UniqueGAVMojo extends AbstractMojo {
 					}
 
 					// check for best practices
-					if (artifactId.indexOf(groupId) < 0) {
-						if (doWarn) {
+					if (doWarn) {
+						if (artifactId.indexOf(groupId) < 0) {
 							log.warn(pom + "\n       ArtifactId (" + artifactId
 									+ ") should contain prefix of " + groupId
 									+ "\n       or groupId (" + groupId
@@ -201,21 +222,21 @@ public class UniqueGAVMojo extends AbstractMojo {
 						}
 					}
 
-					// if (name == "") {
-					// if (doWarn) {
-					// log.warn(pom + "\n       Name is not set.");
-					// warnings++;
-					// }
-					// } else if (name != ""
-					// && (name.indexOf(artifactId) < 0 || artifactId
-					// .indexOf(name) < 0)) {
-					// if (doInfo) {
-					// log.info(pom + "\n       ArtifactId = "
-					// + artifactId + ", but name = " + name
-					// + "; should be the same");
-					// infos++;
-					// }
-					// }
+					if (name == "") {
+						if (doWarn) {
+							log.info(pom + "\n       Name is not set.");
+							warnings++;
+						}
+					} else if (name != ""
+							&& (name.indexOf(artifactId) < 0 || artifactId
+									.indexOf(name) < 0)) {
+						if (doInfo) {
+							log.info(pom + "\n       ArtifactId = "
+									+ artifactId + ", but name = " + name
+									+ "; should be the same");
+							infos++;
+						}
+					}
 
 					// check for duplicates
 					String GAVkey = groupId + ":" + artifactId + ":" + version;
@@ -239,14 +260,14 @@ public class UniqueGAVMojo extends AbstractMojo {
 				}
 			}
 
-			if (doError) {
-				System.out.println("Found " + errors + " errors.");
+			if (doError && (errors > 0 || verbose)) {
+				log.info("Found " + errors + " errors.");
 			}
-			if (doWarn) {
-				System.out.println("Found " + warnings + " warnings.");
+			if (doWarn && (warnings > 0 || verbose)) {
+				log.info("Found " + warnings + " warnings.");
 			}
-			if (doInfo) {
-				System.out.println("Found " + infos + " infos.");
+			if (doInfo && (infos > 0 || verbose)) {
+				log.info("Found " + infos + " infos.");
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
