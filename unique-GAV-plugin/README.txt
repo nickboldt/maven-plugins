@@ -32,14 +32,3 @@ To use this plugin in your own project:
 	    </plugin>
     </plugins>
 </build>
-
-and
-
-<dependencies>
-	<dependency>
-		<groupId>org.apache.maven</groupId>
-		<artifactId>maven-plugin-api</artifactId>
-		<version>2.0</version>
-	</dependency>
-</dependencies>
-            
