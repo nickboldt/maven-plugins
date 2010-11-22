@@ -2,6 +2,9 @@ package org.jboss.maven.plugins.util.test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Iterator;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -14,6 +17,8 @@ import org.junit.Test;
 
 public class SiteAggregateMojoTest {
 
+	private static final String separatorLine = "======================================================================";
+
 	private File tempDir;
 
 	/**
@@ -25,31 +30,68 @@ public class SiteAggregateMojoTest {
 
 	String excludes;
 
+	private static final String[] sourceURLs = {
+			"http://download.jboss.org/jbosstools/builds/staging/",
+			"file:///home/nboldt/tru/jmx/" };
+
+	private static boolean verbose;
+
 	@Before
 	public void setUp() throws IOException {
 		tempDir = createTempDir(getClass().getSimpleName());
 
 		if (sourceURL == null) {
-			sourceURL = "http://download.jboss.org/jbosstools/builds/staging/";
-			// sourceURL = "file:///home/nboldt/tru/jmx/"; // file:// not
-			// supported
+			sourceURL = sourceURLs[0];
 		}
 		site = new SiteAggregateMojo();
 		site.setSourceURL(sourceURL);
-		System.out
-				.println("======================================================================");
+		verbose = site.getVerbose();
+		if (verbose)
+			System.out.println(separatorLine);
 	}
 
 	@After
 	public void tearDown() throws IOException {
 		FileUtils.deleteDirectory(tempDir);
-		System.out
-				.println("======================================================================");
+		verbose = site.getVerbose();
+		if (verbose)
+			System.out.println(separatorLine);
 	}
 
 	@Test
-	public void testNothing() throws IOException, MojoExecutionException {
-		site.execute();
+	public void testGetRemoteSubfolders() throws IOException,
+			MojoExecutionException {
+		site.setSourceURL(sourceURLs[0]);
+		site.fetchSubfolders();
+		Assert.assertTrue(true);
+	}
+
+	@Test
+	public void testCreateRemoteCompositeSiteMetadata() throws IOException,
+			MojoExecutionException {
+		testGetRemoteSubfolders();
+		site.createCompositeSiteMetadata();
+		Assert.assertTrue(true);
+	}
+
+	@Test
+	public void testGetLocalSubfolders() throws IOException,
+			MojoExecutionException {
+		site.setSourceURL(sourceURLs[1]);
+		site.fetchSubfolders();
+		Hashtable<String, String> subfolders = site.getSubfolders();
+		for (Enumeration e = subfolders.elements(); e.hasMoreElements();) {
+			String URL = ((String) e.nextElement()).replaceAll("file:/", "");
+			Assert.assertTrue("File does not exist: " + URL,
+					new File(URL).exists());
+		}
+	}
+
+	@Test
+	public void testCreateLocalCompositeSiteMetadata() throws IOException,
+			MojoExecutionException {
+		testGetLocalSubfolders();
+		site.createCompositeSiteMetadata();
 		Assert.assertTrue(true);
 	}
 

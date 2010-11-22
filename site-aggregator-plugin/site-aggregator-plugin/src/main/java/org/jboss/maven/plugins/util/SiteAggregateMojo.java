@@ -1,13 +1,14 @@
 package org.jboss.maven.plugins.util;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -23,6 +24,7 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
+import org.codehaus.plexus.util.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -46,6 +48,10 @@ public class SiteAggregateMojo extends AbstractMojo {
 	 * @parameter expression="${doWarn}" default-value="false"
 	 */
 	private boolean verbose = false;
+
+	public boolean getVerbose() {
+		return verbose;
+	}
 
 	public void setVerbose(boolean verbose) {
 		this.verbose = verbose;
@@ -78,10 +84,10 @@ public class SiteAggregateMojo extends AbstractMojo {
 		this.targetDir = targetDir;
 	}
 
-	private Hashtable<String, String> URLs = new Hashtable<String, String>();
+	private Hashtable<String, String> subfolders = new Hashtable<String, String>();
 
-	public Hashtable<String, String> getURLs() {
-		return URLs;
+	public Hashtable<String, String> getSubfolders() {
+		return subfolders;
 	}
 
 	public void execute() throws MojoExecutionException {
@@ -93,48 +99,79 @@ public class SiteAggregateMojo extends AbstractMojo {
 			log.info("Aggregating from " + sourceURL);
 		}
 
-		// <tr><td valign="top"><img src="/icons/folder.gif"
-		// alt="[DIR]"></td><td><a
-		// href="jbosstools-drools-5.2/">jbosstools-drools-5.2/</a></td><td
-		// align="right">19-Nov-2010 06:57 </td><td align="right"> - </td></tr>
-		String responseBody = getResponseFromURL(sourceURL);
+		// get subfolders from sourceURL
+		fetchSubfolders();
 
-		Document dom = null;
-		try {
-			File tmpfile = File.createTempFile(getClass().getSimpleName(), "");
-			// if (verbose) log.info("Write to " + tmpfile);
-			writeCleanXMLToFile(tmpfile, responseBody);
-			dom = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-					.parse(tmpfile);
-			tmpfile.delete();
-			URLs = getURLsFromXML(dom, "");
-		} catch (SAXException e) {
-			log.error("Error parsing HTML from '" + sourceURL + "'");
-			e.printStackTrace();
-		} catch (ParserConfigurationException e) {
-			log.error("Error parsing '" + sourceURL + "'");
-			e.printStackTrace();
-		} catch (IOException e) {
-			log.error("IOException: " + e.getLocalizedMessage());
-			e.printStackTrace();
-		}
-
-		// now that we have a list of URLs...
+		// now that we have a list of subfolders...
 
 		// 1. create composite site p2 metadata
 
-		// if we want absolute paths (for offline use), use sourceURL as prefix; otherwise use relative path for speed / portability
-		// String prefix = sourceURL + (sourceURL.endsWith("/") ? "" : "/");
-		createCompositeSiteMetadata("JBoss Tools Staging Repository", "",
-				"all/repo/", targetDir);
+		createCompositeSiteMetadata("JBoss Tools Staging Repository", sourceURL
+				+ (sourceURL.endsWith("/") ? "" : "/"), "all/repo/", targetDir);
 
 		// 2. TODO: collect site results (non-p2 metadata)
-		for (Enumeration e = URLs.elements(); e.hasMoreElements();) {
+		for (Enumeration e = subfolders.elements(); e.hasMoreElements();) {
 			String URL = (String) e.nextElement();
 			System.out.println("Fetch metadata from " + URL);
 		}
 
-		// TODO: figure out how to publish this metadata to the site over sftp? (or just push w/ shell script publish.sh)
+		// TODO: figure out how to publish this metadata to the site over sftp?
+		// (or just push w/ shell script publish.sh)
+	}
+
+	/**
+	 * Can fetch sub dirs from Apache dir listing URL or local file:/ folder URL
+	 */
+	public void fetchSubfolders() {
+		Log log = getLog();
+		if (sourceURL.indexOf("file:/") == 0) {
+			try {
+				List directoryNames = FileUtils.getDirectoryNames(new File(
+						sourceURL.replaceAll("file:/", "")), "*",
+						".svn, .git, CVS", true);
+				for (Iterator i = directoryNames.iterator(); i.hasNext();) {
+					String URL = "file:/" + (String) i.next();
+					if (!subfolders.containsKey(URL)) {
+						subfolders.put(URL, URL);
+
+					}
+				}
+			} catch (IOException e) {
+				log.error("Cound not load file "
+						+ sourceURL.replaceAll("file:/", ""));
+				e.printStackTrace();
+			}
+		} else {
+			String responseBody = getResponseFromURL(sourceURL);
+
+			Document dom = null;
+			try {
+				File tmpfile = File.createTempFile(getClass().getSimpleName(),
+						"");
+				// if (verbose) log.info("Write to " + tmpfile);
+				writeCleanXMLToFile(tmpfile, responseBody);
+				dom = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+						.parse(tmpfile);
+				tmpfile.delete();
+				subfolders = getSubfoldersFromXML(dom);
+			} catch (SAXException e) {
+				log.error("Error parsing HTML from '" + sourceURL + "'");
+				e.printStackTrace();
+			} catch (ParserConfigurationException e) {
+				log.error("Error parsing '" + sourceURL + "'");
+				e.printStackTrace();
+			} catch (IOException e) {
+				log.error("IOException: " + e.getLocalizedMessage());
+				e.printStackTrace();
+			} catch (MojoExecutionException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void createCompositeSiteMetadata() throws MojoExecutionException {
+		createCompositeSiteMetadata("JBoss Tools Staging Repository", sourceURL
+				+ (sourceURL.endsWith("/") ? "" : "/"), "all/repo/", targetDir);
 	}
 
 	private void createCompositeSiteMetadata(String repoName, String prefix,
@@ -150,12 +187,13 @@ public class SiteAggregateMojo extends AbstractMojo {
 		sb.append("<property name='p2.compressed' value='true'/>\n");
 		sb.append("<property name='p2.timestamp' value='" + repoDate + "'/>\n");
 		sb.append("</properties>\n");
-		sb.append("<children size='" + URLs.size() + "'>\n");
-		for (Enumeration<String> e = URLs.elements(); e.hasMoreElements();) {
+		sb.append("<children size='" + subfolders.size() + "'>\n");
+		for (Enumeration<String> e = subfolders.elements(); e.hasMoreElements();) {
 			String URL = (String) e.nextElement();
-			sb.append("<child location='" + URL + suffix + "'/>\n");
+			sb.append("<child location='" + prefix + URL
+					+ (suffix.indexOf("/") == 0 ? "" : "/") + suffix + "'/>\n");
 			if (verbose)
-				log.info("Add to composite metadata: " + URL);
+				log.info("Add to composite metadata: " + prefix + URL);
 		}
 		sb.append("</children>\n");
 		sb.append("</repository>\n");
@@ -172,12 +210,13 @@ public class SiteAggregateMojo extends AbstractMojo {
 		sb.append("<property name='p2.compressed' value='true'/>\n");
 		sb.append("<property name='p2.timestamp' value='" + repoDate + "'/>\n");
 		sb.append("</properties>\n");
-		sb.append("<children size='" + URLs.size() + "'>\n");
-		for (Enumeration<String> e = URLs.elements(); e.hasMoreElements();) {
+		sb.append("<children size='" + subfolders.size() + "'>\n");
+		for (Enumeration<String> e = subfolders.elements(); e.hasMoreElements();) {
 			String URL = (String) e.nextElement();
-			sb.append("<child location='" + URL + suffix + "'/>\n");
+			sb.append("<child location='" + prefix + URL
+					+ (suffix.indexOf("/") == 0 ? "" : "/") + suffix + "'/>\n");
 			if (verbose)
-				log.info("Add to composite artifact: " + URL);
+				log.info("Add to composite artifact: " + prefix + URL);
 		}
 		sb.append("</children>\n");
 		sb.append("</repository>\n");
@@ -187,9 +226,9 @@ public class SiteAggregateMojo extends AbstractMojo {
 				sb.toString());
 	}
 
-	private Hashtable<String, String> getURLsFromXML(Document dom, String prefix) {
+	private Hashtable<String, String> getSubfoldersFromXML(Document dom) {
 		Log log = getLog();
-		Hashtable<String, String> URLs = new Hashtable<String, String>();
+		Hashtable<String, String> subfolders = new Hashtable<String, String>();
 		// collect all <tr> tags from the dom tree
 		Node table = dom.getElementsByTagName("table").item(0);
 		// System.out.println("Table node: " + table.toString());
@@ -280,14 +319,13 @@ public class SiteAggregateMojo extends AbstractMojo {
 																			+ "\">");
 																// check for
 																// duplicates
-																String URL = prefix
-																		+ attrib1
-																				.getNodeValue();
-																if (!URLs
+																String URL = attrib1
+																		.getNodeValue();
+																if (!subfolders
 																		.containsKey(URL)) {
-																	URLs.put(
-																			URL,
-																			URL);
+																	subfolders
+																			.put(URL,
+																					URL);
 																}
 															}
 														}
@@ -304,7 +342,7 @@ public class SiteAggregateMojo extends AbstractMojo {
 				}
 			}
 		}
-		return URLs;
+		return subfolders;
 
 	}
 
@@ -369,8 +407,16 @@ public class SiteAggregateMojo extends AbstractMojo {
 
 		// clean up the connection resources
 		method.releaseConnection();
-
 		return responseBody;
+	}
+
+	// local file URL
+	private static String readFileAsString(String filePath)
+			throws java.io.IOException {
+		byte[] buffer = new byte[(int) new File(filePath).length()];
+		FileInputStream f = new FileInputStream(filePath);
+		f.read(buffer);
+		return new String(buffer);
 	}
 
 	public void writeDomToFile(File pomFile, Document dom)
