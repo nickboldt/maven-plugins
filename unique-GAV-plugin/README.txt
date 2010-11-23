@@ -1,7 +1,10 @@
 To use this plugin in your own project:
 
-1. build it w/ `mvn3 clean install`
-2. Add it to your pom.xml with this:
+1. First, build it:
+
+mvn3 clean install
+
+2. Next, add it to your pom.xml with this:
 
 <build>
     <plugins>
@@ -32,3 +35,8 @@ To use this plugin in your own project:
 	    </plugin>
     </plugins>
 </build>
+
+3. run it as part of a build (mvn3 clean install), or just do this to run the plugin w/o compiling or installing output:
+
+ mvn3 validate -P GAV,local.target
+
