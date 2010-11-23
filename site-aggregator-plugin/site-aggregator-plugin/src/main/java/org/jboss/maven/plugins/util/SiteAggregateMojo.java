@@ -107,7 +107,8 @@ public class SiteAggregateMojo extends AbstractMojo {
 		// 1. create composite site p2 metadata
 
 		createCompositeSiteMetadata("JBoss Tools Staging Repository", sourceURL
-				+ (sourceURL.endsWith("/") ? "" : "/"), "all/repo/", targetDir);
+				+ (sourceURL.endsWith("/") ? "" : "/"),
+				sourceURL.indexOf("file:/") == 0 ? "" : "all/repo/", targetDir);
 
 		// 2. TODO: collect site results (non-p2 metadata)
 		for (Enumeration e = subfolders.elements(); e.hasMoreElements();) {
@@ -125,20 +126,22 @@ public class SiteAggregateMojo extends AbstractMojo {
 	public void fetchSubfolders() {
 		Log log = getLog();
 		if (sourceURL.indexOf("file:/") == 0) {
+			String sourceFolder = "/" + sourceURL.replaceAll("file:/+", "");
 			try {
 				List directoryNames = FileUtils.getDirectoryNames(new File(
-						sourceURL.replaceAll("file:/", "")), "*",
-						".svn, .git, CVS", true);
-				for (Iterator i = directoryNames.iterator(); i.hasNext();) {
-					String URL = "file:/" + (String) i.next();
-					if (!subfolders.containsKey(URL)) {
-						subfolders.put(URL, URL);
-
+						sourceFolder), "*", ".svn, .git, CVS", true);
+				for (Iterator<String> i = directoryNames.iterator(); i
+						.hasNext();) {
+					String folder = ((String) i.next());
+					// System.out.println(sourceFolder + " :: " + folder);
+					if (!subfolders.containsKey(folder)) {
+						// store as k: /home/nboldt/tru/jmx/tests, v: tests
+						subfolders
+								.put(folder, folder.replace(sourceFolder, ""));
 					}
 				}
 			} catch (IOException e) {
-				log.error("Cound not load file "
-						+ sourceURL.replaceAll("file:/", ""));
+				log.error("Cound not load file " + sourceFolder);
 				e.printStackTrace();
 			}
 		} else {
@@ -169,16 +172,28 @@ public class SiteAggregateMojo extends AbstractMojo {
 		}
 	}
 
+	/**
+	 * convenience method for remote repos in staging dir (using all/repo/
+	 * suffix)
+	 * 
+	 * @throws MojoExecutionException
+	 */
 	public void createCompositeSiteMetadata() throws MojoExecutionException {
 		createCompositeSiteMetadata("JBoss Tools Staging Repository", sourceURL
 				+ (sourceURL.endsWith("/") ? "" : "/"), "all/repo/", targetDir);
 	}
 
-	private void createCompositeSiteMetadata(String repoName, String prefix,
+	public void createCompositeSiteMetadata(String repoName, String prefix,
 			String suffix, String targetDir) throws MojoExecutionException {
+		createCompositeSiteMetadata(repoName, prefix, suffix, new File(
+				targetDir));
+	}
+
+	public void createCompositeSiteMetadata(String repoName, String prefix,
+			String suffix, File targetDir) throws MojoExecutionException {
 		Log log = getLog();
 		long repoDate = new Date().getTime();
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append("<?xml version='1.0' encoding='UTF-8'?>\n<?compositeMetadataRepository version='1.0.0'?>\n");
 		sb.append("<repository name='"
 				+ repoName
@@ -189,19 +204,24 @@ public class SiteAggregateMojo extends AbstractMojo {
 		sb.append("</properties>\n");
 		sb.append("<children size='" + subfolders.size() + "'>\n");
 		for (Enumeration<String> e = subfolders.elements(); e.hasMoreElements();) {
-			String URL = (String) e.nextElement();
-			sb.append("<child location='" + prefix + URL
-					+ (suffix.indexOf("/") == 0 ? "" : "/") + suffix + "'/>\n");
+			String subfolder = (String) e.nextElement();
+			sb.append("<child location='"
+					+ prefix
+					+ (prefix.endsWith("/") || subfolder.indexOf("/") == 0 ? ""
+							: "/")
+					+ subfolder
+					+ (subfolder.endsWith("/") || suffix.indexOf("/") == 0 ? ""
+							: "/") + suffix + "'/>\n");
 			if (verbose)
-				log.info("Add to composite metadata: " + prefix + URL);
+				log.info("Add to composite metadata: " + prefix + subfolder);
 		}
 		sb.append("</children>\n");
 		sb.append("</repository>\n");
 
 		// print to file, compositeContent.xml
-		writeToFile(new File(targetDir + "compositeContent.xml"), sb.toString());
+		writeToFile(new File(targetDir, "compositeContent.xml"), sb.toString());
 
-		sb = new StringBuffer();
+		sb = new StringBuilder();
 		sb.append("<?xml version='1.0' encoding='UTF-8'?>\n<?compositeArtifactRepository version='1.0.0'?>\n");
 		sb.append("<repository name='"
 				+ repoName
@@ -212,17 +232,22 @@ public class SiteAggregateMojo extends AbstractMojo {
 		sb.append("</properties>\n");
 		sb.append("<children size='" + subfolders.size() + "'>\n");
 		for (Enumeration<String> e = subfolders.elements(); e.hasMoreElements();) {
-			String URL = (String) e.nextElement();
-			sb.append("<child location='" + prefix + URL
-					+ (suffix.indexOf("/") == 0 ? "" : "/") + suffix + "'/>\n");
+			String subfolder = (String) e.nextElement();
+			sb.append("<child location='"
+					+ prefix
+					+ (prefix.endsWith("/") || subfolder.indexOf("/") == 0 ? ""
+							: "/")
+					+ subfolder
+					+ (subfolder.endsWith("/") || suffix.indexOf("/") == 0 ? ""
+							: "/") + suffix + "'/>\n");
 			if (verbose)
-				log.info("Add to composite artifact: " + prefix + URL);
+				log.info("Add to composite artifact: " + prefix + subfolder);
 		}
 		sb.append("</children>\n");
 		sb.append("</repository>\n");
 
 		// print to file, compositeArtifacts.xml
-		writeToFile(new File(targetDir + "compositeArtifacts.xml"),
+		writeToFile(new File(targetDir, "compositeArtifacts.xml"),
 				sb.toString());
 	}
 
@@ -319,13 +344,19 @@ public class SiteAggregateMojo extends AbstractMojo {
 																			+ "\">");
 																// check for
 																// duplicates
-																String URL = attrib1
+																String subfolder = attrib1
 																		.getNodeValue();
 																if (!subfolders
-																		.containsKey(URL)) {
+																		.containsKey(subfolder)) {
 																	subfolders
-																			.put(URL,
-																					URL);
+																			.put(sourceURL
+																					+ (sourceURL
+																							.endsWith("/")
+																							|| subfolder
+																									.indexOf("/") == 0 ? ""
+																							: "/")
+																					+ subfolder,
+																					subfolder);
 																}
 															}
 														}

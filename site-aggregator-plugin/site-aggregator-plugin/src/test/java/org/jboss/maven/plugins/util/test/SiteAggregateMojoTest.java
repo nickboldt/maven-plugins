@@ -80,10 +80,14 @@ public class SiteAggregateMojoTest {
 		site.setSourceURL(sourceURLs[1]);
 		site.fetchSubfolders();
 		Hashtable<String, String> subfolders = site.getSubfolders();
-		for (Enumeration e = subfolders.elements(); e.hasMoreElements();) {
-			String URL = ((String) e.nextElement()).replaceAll("file:/", "");
-			Assert.assertTrue("File does not exist: " + URL,
-					new File(URL).exists());
+		String prefix = "/" + site.getSourceURL().replaceAll("file:/+", "");
+		for (Enumeration<String> e = subfolders.elements(); e.hasMoreElements();) {
+			String subfolder = (String) e.nextElement();
+			subfolder = prefix
+					+ (prefix.endsWith("/") || subfolder.indexOf("/") == 0 ? ""
+							: "/") + subfolder;
+			Assert.assertTrue("File does not exist: " + subfolder, new File(
+					subfolder).exists());
 		}
 	}
 
@@ -91,7 +95,8 @@ public class SiteAggregateMojoTest {
 	public void testCreateLocalCompositeSiteMetadata() throws IOException,
 			MojoExecutionException {
 		testGetLocalSubfolders();
-		site.createCompositeSiteMetadata();
+		site.createCompositeSiteMetadata("JBoss Tools Staging Repository",
+				site.getSourceURL() + (site.getSourceURL().endsWith("/") ? "" : "/"), "", site.getTargetDir());
 		Assert.assertTrue(true);
 	}
 
