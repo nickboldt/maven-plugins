@@ -45,7 +45,7 @@ import org.xml.sax.SAXException;
 public class SiteAggregateMojo extends AbstractMojo {
 
 	/**
-	 * @parameter expression="${doWarn}" default-value="false"
+	 * @parameter expression="${verbose}" default-value="false"
 	 */
 	private boolean verbose = false;
 
@@ -58,7 +58,7 @@ public class SiteAggregateMojo extends AbstractMojo {
 	}
 
 	/**
-	 * @parameter expression="${stagingDirectory}"
+	 * @parameter expression="${sourceURL}"
 	 *            default-value="http://download.jboss.org/jbosstools/builds/staging/"
 	 */
 	private String sourceURL = "http://download.jboss.org/jbosstools/builds/staging/";
@@ -72,7 +72,7 @@ public class SiteAggregateMojo extends AbstractMojo {
 	}
 
 	/**
-	 * @parameter expression="${stagingDirectory}" default-value="target/"
+	 * @parameter expression="${targetDir}" default-value="target/"
 	 */
 	private String targetDir = "target/";
 
@@ -105,12 +105,11 @@ public class SiteAggregateMojo extends AbstractMojo {
 		// now that we have a list of subfolders...
 
 		// 1. create composite site p2 metadata
-
 		createCompositeSiteMetadata("JBoss Tools Staging Repository", sourceURL
 				+ (sourceURL.endsWith("/") ? "" : "/"),
 				sourceURL.indexOf("file:/") == 0 ? "" : "all/repo/", targetDir);
 
-		// 2. TODO: collect site results (non-p2 metadata)
+		// 2. TODO: collect site results (non-p2 metadata) into $targetDir/results/
 		for (Enumeration e = subfolders.elements(); e.hasMoreElements();) {
 			String URL = (String) e.nextElement();
 			System.out.println("Fetch metadata from " + URL);

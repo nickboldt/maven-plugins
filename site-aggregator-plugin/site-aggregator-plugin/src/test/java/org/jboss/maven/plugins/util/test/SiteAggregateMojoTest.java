@@ -96,7 +96,11 @@ public class SiteAggregateMojoTest {
 			MojoExecutionException {
 		testGetLocalSubfolders();
 		site.createCompositeSiteMetadata("JBoss Tools Staging Repository",
-				site.getSourceURL() + (site.getSourceURL().endsWith("/") ? "" : "/"), "", site.getTargetDir());
+				site.getSourceURL()
+						+ (site.getSourceURL().endsWith("/") ? "" : "/"), "",
+				tempDir);
+		// alternatively, publish to site.getTargetDir() make it easier to see
+		// output within Eclipse
 		Assert.assertTrue(true);
 	}
 
