@@ -95,7 +95,7 @@ osgi-test:test :: just (re-)run test(s)
   <assignedNode>RHEL_any</assignedNode>
 
   <canRoam>false</canRoam>
-  <disabled>true</disabled>
+  <disabled>false</disabled>
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
   <jdk>java16_default</jdk>
   <triggers class="vector">
@@ -140,7 +140,6 @@ osgi-test:test :: just (re-)run test(s)
       <dontNotifyEveryUnstableBuild>false</dontNotifyEveryUnstableBuild>
       <sendToIndividuals>true</sendToIndividuals>
     </hudson.tasks.Mailer>
-    <hudson.plugins.emotional__hudson.EmotionalHudsonPublisher/>
   </publishers>
   <buildWrappers>
 

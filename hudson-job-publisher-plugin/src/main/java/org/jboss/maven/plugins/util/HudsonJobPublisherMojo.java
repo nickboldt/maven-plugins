@@ -5,8 +5,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
@@ -23,8 +26,6 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.NodeList;
 
 /**
  * Given some basic params, publish a Hudson job to a given server
@@ -90,7 +91,7 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 	}
 
 	/**
-	 * @parameter expression="${replaceExistingJob}" default-value="false"
+	 * @parameter expression="${replaceExistingJob}" default-value="true"
 	 */
 	private boolean replaceExistingJob = true;
 
@@ -102,8 +103,63 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 		this.replaceExistingJob = replaceExistingJob;
 	}
 
-	private PostMethod post;
+	/**
+	 * @parameter expression="${buildURL}"
+	 *            default-value="http://svn.jboss.org/repos/jbosstools/trunk/build"
+	 */
+	private String buildURL = "http://svn.jboss.org/repos/jbosstools/trunk/build";
 
+	public String getBuildURL() {
+		return buildURL;
+	}
+
+	public void setBuildURL(String buildURL) {
+		this.buildURL = buildURL;
+	}
+
+	/**
+	 * @parameter expression="${properties}"
+	 */
+	private Properties jobProperties = new Properties();
+
+	public Properties getJobProperties() {
+		return jobProperties;
+	}
+
+	public void setJobProperties(Properties jobProperties) {
+		this.jobProperties = jobProperties;
+	}
+
+	/**
+	 * @parameter expression="${components}" default-value=""
+	 */
+	private String components = "";
+
+	public String getComponents() {
+		return components;
+	}
+
+	public void setComponents(String components) {
+		this.components = components;
+	}
+
+	/**
+	 * @parameter expression="${componentJobNameSuffix}" default-value=""
+	 */
+	private String componentJobNameSuffix = "";
+
+	public String getComponentJobNameSuffix() {
+		return componentJobNameSuffix;
+	}
+
+	public void setComponentJobNameSuffix(String componentJobNameSuffix) {
+		this.componentJobNameSuffix = componentJobNameSuffix;
+	}
+
+	private static final String JOB_ALREADY_EXISTS = "A job already exists with the name ";
+	public static final String JOB_NAME = "Job Name: "; 
+	public static final String JBOSSTOOLS_JOBNAME_PREFIX = "jbosstools-";
+	
 	public void execute() throws MojoExecutionException {
 		Log log = getLog();
 
@@ -116,101 +172,165 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 		String xmlTemplate = "src/main/resources/templates/config.xml";
 		String xml = "target/config.xml";
 
-		// String sourcesURL =
-		// "http://svn.jboss.org/repos/jbosstools/trunk/bpel";
-		// String buildURL =
-		// "http://svn.jboss.org/repos/jbosstools/trunk/build";
-		// String jobName = "jbosstools-bpel";
-		String sourcesURL = "http://svn.jboss.org/repos/jbosstools/branches/jbosstools-3.2.0.Beta2/bpel";
-		String buildURL = "http://svn.jboss.org/repos/jbosstools/branches/jbosstools-3.2.0.Beta2/build";
-		String jobName = "jbosstools-bpel-stable-branch";
-
-		// replace params above into XML template
-		Document dom;
-		FileWriter w = null;
-		try {
-			dom = new SAXReader().read(new File(xmlTemplate));
-			Node node;
-			node = dom
-					.selectSingleNode("/project/scm/locations/hudson.scm.SubversionSCM_-ModuleLocation[1]/remote");
-			node.setText(sourcesURL);
-			node = dom
-					.selectSingleNode("/project/scm/locations/hudson.scm.SubversionSCM_-ModuleLocation[2]/remote");
-			node.setText(buildURL);
-			// TODO: add destination folder option to publish.sh
-			w = new FileWriter(new File(xml));
-			dom.write(w);
-		} catch (DocumentException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			if (w != null) {
-				try {
-					w.close();
-				} catch (IOException e) {
-					// ignore
-				}
+		if (components != null && !components.isEmpty()) {
+			String[] componentArray = components.split("[, ]+");
+//			System.out.println(componentArray.length + " : " + componentArray);
+			for (int i = 0; i < componentArray.length; i++) {
+				// add new jobName to sourcesURL mappings
+//				System.out.println(componentArray[i] + ", " + componentJobNameSuffix + ", " + buildURL.replaceAll("/build/*$", "/"));
+				jobProperties.put(JBOSSTOOLS_JOBNAME_PREFIX + componentArray[i]
+						+ componentJobNameSuffix,
+						buildURL.replaceAll("/build/*$", "/")
+								+ componentArray[i]);
+//				System.out.println("Got: " + jobProperties.get("jbosstools-" + componentArray[i] + componentJobNameSuffix));
 			}
 		}
 
-		String jobURL = hudsonURL + "createItem?name=" + jobName;
-		int result = postXML(xml, jobURL);
-		if (result == 400) {
-			String error = getErrorMessage();
-			if (error.indexOf("A job already exists with the name '" + jobName
-					+ "'") == 0) {
+		// load jobName::sourcesURL mapping from jobProperties
+		Enumeration jobNames = jobProperties.propertyNames();
+		while (jobNames.hasMoreElements()) {
+			String jobName = (String) jobNames.nextElement();
+			String sourcesURL = jobProperties.getProperty(jobName);
+
+			updateConfigXML(sourcesURL, xmlTemplate, xml);
+
+			// delete existing job
+			if (replaceExistingJob) {
+				deleteJob(xml, jobName, false);
+			}
+			createOrUpdateJob(xml, jobName);
+		}
+		if (verbose) {
+			try {
+				log.info(listJobsOnSecureServer());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void createOrUpdateJob(String xml, String jobName)
+			throws MojoExecutionException {
+		String[] result = createJob(xml, jobName, !replaceExistingJob);
+		// System.out.println(result[0] + "\n" + result[1]);
+		if (Integer.parseInt(result[0].trim()) == 400) {
+			String error = result[1];
+			if (error.indexOf(">" + JOB_ALREADY_EXISTS + "'" + jobName + "'<") != 0) {
 				if (replaceExistingJob) {
-					// post to $hudsonURL/job/$jobName/config.xml
-					log.info("Update config.xml for job " + jobName);
-					result = postXML(xml, hudsonURL + "/job/" + jobName
-							+ "/config.xml");
+					updateJob(xml, jobName, false);
 				} else {
-					log.error(error
-							+ ". Set replaceExistingJob = true to overwrite existing jobs.");
+					getLog().error(
+							JOB_ALREADY_EXISTS
+									+ "'"
+									+ jobName
+									+ "'. Set replaceExistingJob = true to overwrite existing jobs.");
 					throw new MojoExecutionException(error);
 				}
 			}
 		}
-
-		try {
-			listJobsOnSecureServer("api/xml");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
-	private String getErrorMessage() {
+	public void updateConfigXML(String sourcesURL, String xmlTemplate,
+			String xml) {
+		// replace params above into XML template
+		Document dom = null;
+		FileWriter w = null;
+		try {
+			dom = new SAXReader().read(new File(xmlTemplate));
+			dom.selectSingleNode(
+					"/project/scm/locations/hudson.scm.SubversionSCM_-ModuleLocation[1]/remote")
+					.setText(sourcesURL);
+			dom.selectSingleNode(
+					"/project/scm/locations/hudson.scm.SubversionSCM_-ModuleLocation[2]/remote")
+					.setText(buildURL);
+			// TODO: add destination folder option to publish.sh
+		} catch (DocumentException e) {
+			getLog().error("Problem reading XML from " + xmlTemplate);
+			e.printStackTrace();
+		}
+
+		if (dom != null) {
+			try {
+				w = new FileWriter(new File(xml));
+				dom.write(w);
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				if (w != null) {
+					try {
+						w.close();
+					} catch (IOException e) {
+						// ignore
+					}
+				}
+			}
+		}
+
+	}
+
+	public Object[] updateJob(String xml, String jobName,
+			boolean getErrorMessage) {
+		if (verbose)
+			getLog().info("Update config.xml for job " + jobName);
+		return postXML(xml, hudsonURL + "/job/" + jobName + "/config.xml",
+				getErrorMessage);
+	}
+
+	public String[] createJob(String xml, String jobName,
+			boolean getErrorMessage) {
+		if (verbose)
+			getLog().info("Create job " + jobName);
+		return postXML(xml, hudsonURL + "createItem?name=" + jobName,
+				getErrorMessage);
+	}
+
+	public String[] deleteJob(String xml, String jobName,
+			boolean getErrorMessage) {
+		if (verbose)
+			getLog().info("Delete job " + jobName);
+		return postXML(xml, hudsonURL + "job/" + jobName + "/doDelete",
+				getErrorMessage);
+	}
+
+	private String getErrorMessage(PostMethod post, String jobName) {
+		Log log = getLog();
 		// scan through the job list and retrieve error message
 		Document dom;
 		String error = null;
 		try {
-			dom = new SAXReader().read(post.getResponseBodyAsStream());
+			// File tempfile = File.createTempFile("getErrorMessage", "");
+			// writeToFile(tempfile, message);
+			InputStream is = post.getResponseBodyAsStream();
+			dom = new SAXReader().read(is);
 			// <p>A job already exists with the name
 			// 'jbosstools-bpel'</p>
 			// see src/main/resources/400-JobExistsError.html
 			for (Element el : (List<Element>) dom
 					.selectNodes("/html/body/table[2]/tr/td/h1")) {
 				if (el.getTextTrim().equals("Error")) {
-					error = el.getParent().selectSingleNode("p").getText();
+					for (Element el2 : (List<Element>) el.getParent()
+							.selectNodes("p")) {
+						error = el2.getText();
+					}
 				}
 			}
 		} catch (DocumentException e) {
-			e.printStackTrace();
+			log.error("Error reading from " + jobName);
+			// e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		} finally {
-			post.releaseConnection();
+			// } catch (MojoExecutionException e) {
+			// e.printStackTrace();
 		}
 		return error;
 	}
 
-	private int postXML(String xml, String jobURL) {
+	private String[] postXML(String xml, String jobURL, boolean getErrorMessage) {
 		Log log = getLog();
-		int result = -1;
+		int resultCode = -1;
+		String resultString = "";
 		File configXMLTemplateFile = new File(xml);
-		post = new PostMethod(jobURL);
+		PostMethod post = new PostMethod(jobURL);
 
 		try {
 			post.setRequestEntity(new InputStreamRequestEntity(
@@ -226,35 +346,47 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 
 		HttpClient client = getHttpClient(username, password);
 		try {
-			result = client.executeMethod(post);
+			resultCode = client.executeMethod(post);
+			if (getErrorMessage) {
+				resultString = post.getResponseBodyAsString();
+				// resultString = getErrorMessage(post, jobURL);
+			}
 			// if (verbose) {
-			// log.info("Response status code: " + result);
+			// log.info("Response status code: " + resultCode);
 			// log.info("Response body: ");
-			// log.info(post.getResponseBodyAsString());
+			// log.info(resultString);
 			// }
 		} catch (HttpException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
+			post.releaseConnection();
 		}
-		return result;
+		if (getErrorMessage) {
+			return new String[] { resultCode + "", resultString };
+		} else {
+			return new String[] { resultCode + "", "" };
+		}
 	}
 
-	public void listJobsOnSecureServer(String URLsuffix) throws Exception {
+	public String listJobsOnSecureServer() throws Exception {
 		Log log = getLog();
 		HttpClient client = getHttpClient(username, password);
 
-		HttpMethod method = new GetMethod(hudsonURL + URLsuffix);
+		HttpMethod method = new GetMethod(hudsonURL + "api/xml");
 		client.executeMethod(method);
 		checkResult(method.getStatusCode());
 
+		StringBuilder sb = new StringBuilder();
 		Document dom = new SAXReader().read(method.getResponseBodyAsStream());
 		// scan through the job list and print its status
 		for (Element job : (List<Element>) dom.getRootElement().elements("job")) {
-			log.info(String.format("Job Name: %s\tStatus: %s",
-					job.elementText("name"), job.elementText("color")));
+			sb.append(String.format(JOB_NAME + "%s\tStatus: %s",
+					job.elementText("name"), job.elementText("color"))
+					+ "\n");
 		}
+		return sb.toString();
 	}
 
 	public HttpClient getHttpClient(String username, String password) {
@@ -312,9 +444,9 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 		return client;
 	}
 
-	public void listJobsOnInsecureServer(String URLsuffix) throws Exception {
+	public void listJobsOnInsecureServer() throws Exception {
 		Log log = getLog();
-		URL url = new URL(hudsonURL + URLsuffix);
+		URL url = new URL(hudsonURL + "api/xml");
 		Document dom;
 		dom = new SAXReader().read(url);
 		// scan through the job list and print its status
