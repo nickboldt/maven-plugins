@@ -1,7 +1,24 @@
-To use this plugin in your own project:
+To be able to connect to server, must first import certificate or you may get this error:
 
-1. build it w/ `mvn3 clean install`
-2. Add it to your pom.xml with this:
+	javax.net.ssl.SSLHandshakeException: sun.security.validator.ValidatorException: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
+
+AS USER (with Firefox):
+
+Browse to https://hudson.qa.jboss.com/hudson & accept the cert.
+
+	Edit > Preferences > Advanced > Encryption > View Certificates > find hudson cert > Export to file /tmp/hudson.qa.jboss.com
+
+AS ROOT (default password is "changeit"):
+
+	# /opt/sun-java2-6.0/jre/bin/keytool -list -keystore /opt/sun-java2-6.0/jre/lib/security/cacerts | grep hudson
+	# /opt/sun-java2-6.0/jre/bin/keytool -import -alias hudson.qa -keystore /opt/sun-java2-6.0/jre/lib/security/cacerts -file /tmp/hudson.qa.jboss.com
+	# /opt/sun-java2-6.0/jre/bin/keytool -list -keystore /opt/sun-java2-6.0/jre/lib/security/cacerts | grep hudson
+
+-----
+
+Now, to use this plugin in your own project:
+
+1. Add it to your pom.xml with this:
 
 	<build>
 		<plugins>
@@ -11,7 +28,7 @@ To use this plugin in your own project:
 				<version>0.0.1-SNAPSHOT</version>
 				<executions>
 					<execution>
-						<phase>validate</phase>
+						<phase>install</phase>
 						<goals>
 							<goal>run</goal>
 						</goals>
@@ -23,13 +40,16 @@ To use this plugin in your own project:
 
 					<!-- server and connection details -->
 					<hudsonURL>http://localhost:8080/</hudsonURL>
-					<!-- <hudsonURL>http://hudson.qa.jboss.com/hudson/</hudsonURL> -->
-					<username>admin</username>
-					<password>Che5tnuT#tR33</password>
+					<!-- <hudsonURL>https://hudson.qa.jboss.com/hudson/</hudsonURL> -->
+					<username>SET USERNAME HERE</username>
+					<password>SET PASSWORD HERE</password>
 
 					<!-- default true: existing jobs will be overwritten; set false to throw 
 						an error if job exists -->
 					<replaceExistingJob>true</replaceExistingJob>
+					
+					<!-- local file path to use as template when publishing jobs -->
+					<jobTemplateFile>config.xml</jobTemplateFile>
 
 					<!-- job configuration: one buildURL -->
 					<buildURL>http://svn.jboss.org/repos/jbosstools/branches/jbosstools-3.2.0.Beta2/build</buildURL>
@@ -58,3 +78,8 @@ To use this plugin in your own project:
 			</plugin>
 		</plugins>
 	</build>
+
+2. To run, make sure that JAVA_HOME is set to the path where you imported the cert, eg.:
+
+	$ export JAVA_HOME=/opt/sun-java2-6.0/; mvn clean install
+ 	

@@ -104,6 +104,19 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 	}
 
 	/**
+	 * @parameter expression="${jobTemplateFile}" default-value="config.xml"
+	 */
+	private String jobTemplateFile = "config.xml";
+
+	public String getJobTemplateFile() {
+		return jobTemplateFile;
+	}
+
+	public void setJobTemplateFile(String jobTemplateFile) {
+		this.jobTemplateFile = jobTemplateFile;
+	}
+
+	/**
 	 * @parameter expression="${buildURL}"
 	 *            default-value="http://svn.jboss.org/repos/jbosstools/trunk/build"
 	 */
@@ -157,9 +170,9 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 	}
 
 	private static final String JOB_ALREADY_EXISTS = "A job already exists with the name ";
-	public static final String JOB_NAME = "Job Name: "; 
+	public static final String JOB_NAME = "Job Name: ";
 	public static final String JBOSSTOOLS_JOBNAME_PREFIX = "jbosstools-";
-	
+
 	public void execute() throws MojoExecutionException {
 		Log log = getLog();
 
@@ -169,20 +182,23 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 			log.info("Hudson URL: " + hudsonURL);
 		}
 
-		String xmlTemplate = "src/main/resources/templates/config.xml";
-		String xml = "target/config.xml";
+		String xml = jobTemplateFile; // "target/config.xml";
 
 		if (components != null && !components.isEmpty()) {
 			String[] componentArray = components.split("[, ]+");
-//			System.out.println(componentArray.length + " : " + componentArray);
+			// System.out.println(componentArray.length + " : " +
+			// componentArray);
 			for (int i = 0; i < componentArray.length; i++) {
 				// add new jobName to sourcesURL mappings
-//				System.out.println(componentArray[i] + ", " + componentJobNameSuffix + ", " + buildURL.replaceAll("/build/*$", "/"));
+				// System.out.println(componentArray[i] + ", " +
+				// componentJobNameSuffix + ", " +
+				// buildURL.replaceAll("/build/*$", "/"));
 				jobProperties.put(JBOSSTOOLS_JOBNAME_PREFIX + componentArray[i]
 						+ componentJobNameSuffix,
 						buildURL.replaceAll("/build/*$", "/")
 								+ componentArray[i]);
-//				System.out.println("Got: " + jobProperties.get("jbosstools-" + componentArray[i] + componentJobNameSuffix));
+				// System.out.println("Got: " + jobProperties.get("jbosstools-"
+				// + componentArray[i] + componentJobNameSuffix));
 			}
 		}
 
@@ -192,7 +208,7 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 			String jobName = (String) jobNames.nextElement();
 			String sourcesURL = jobProperties.getProperty(jobName);
 
-			updateConfigXML(sourcesURL, xmlTemplate, xml);
+			updateConfigXML(sourcesURL, jobTemplateFile, xml);
 
 			// delete existing job
 			if (replaceExistingJob) {
@@ -382,9 +398,12 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 		Document dom = new SAXReader().read(method.getResponseBodyAsStream());
 		// scan through the job list and print its status
 		for (Element job : (List<Element>) dom.getRootElement().elements("job")) {
-			sb.append(String.format(JOB_NAME + "%s\tStatus: %s",
-					job.elementText("name"), job.elementText("color"))
-					+ "\n");
+			if (job.elementText("name").toString()
+					.indexOf(JBOSSTOOLS_JOBNAME_PREFIX) == 0) {
+				sb.append(String.format(JOB_NAME + "%s\tStatus: %s",
+						job.elementText("name"), job.elementText("color"))
+						+ "\n");
+			}
 		}
 		return sb.toString();
 	}
