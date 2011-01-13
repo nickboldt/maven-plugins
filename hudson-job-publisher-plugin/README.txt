@@ -55,7 +55,7 @@ Now, to use this plugin in your own project:
 					<buildURL>http://svn.jboss.org/repos/jbosstools/branches/jbosstools-3.2.0.Beta2/build</buildURL>
 					<!-- then many identically configured components -->
 					<componentJobNamePrefix>jbosstools-3.2_trunk.component--</componentJobNamePrefix>
-					<components>archives, as, birt, bpel, bpmn, cdi, common,
+					<components>jmx, archives, as, birt, bpel, bpmn, cdi, common,
 						deltacloud, esb, examples, flow, freemarker, gwt, hibernatetools,
 						jbpm, jmx, jsf, jst, maven, modeshape, portlet, profiler, runtime,
 						seam, smooks, struts, tptp, usage, vpe, ws</components>
