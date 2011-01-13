@@ -203,20 +203,43 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 		this.componentJobNameSuffix2 = componentJobNameSuffix2;
 	}
 
-	// TODO: set as parameter
-	private static final String JOB_URL_SUFFIX = "view/DevStudio_Trunk/";
-	// "view/DevStudio_Stable_Branch/";
+	/**
+	 * @parameter expression="${componentJobNamePrefix}"
+	 *            default-value="jbosstools-"
+	 */
+	// replacement for componentJobNameSuffix when copying jobs
+	private String componentJobNamePrefix = "jbosstools-";
+
+	public String getJbosstoolsJobnamePrefix() {
+		return componentJobNamePrefix;
+	}
+
+	public void setJbosstoolsJobnamePrefix(String componentJobNamePrefix) {
+		this.componentJobNamePrefix = componentJobNamePrefix;
+	}
+
+	/**
+	 * filter the server to show only one view's worth of jobs (not the whole
+	 * server list)
+	 * 
+	 * @parameter expression="${componentJobNamePrefix}" default-value=""
+	 */
+	// replacement for componentJobNameSuffix when copying jobs
+	private String viewPath = "view/DevStudio_Trunk/"; // "view/DevStudio_Stable_Branch/";
+
+	public String getViewPath() {
+		return viewPath;
+	}
+
+	public void setViewPath(String viewPath) {
+		this.viewPath = viewPath;
+	}
 
 	private static final String JOB_ALREADY_EXISTS = "A job already exists with the name ";
 	private static final String JOB_NAME = "Job Name: ";
-	private static final String JBOSSTOOLS_JOBNAME_PREFIX = "jbosstools-3.2_trunk.component--";
 
 	public static String getJobName() {
 		return JOB_NAME;
-	}
-
-	public static String getJbosstoolsJobnamePrefix() {
-		return JBOSSTOOLS_JOBNAME_PREFIX;
 	}
 
 	public void execute() throws MojoExecutionException {
@@ -258,9 +281,8 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 				&& !componentJobNameSuffix2.equals("")) {
 			String[] jobNames = null;
 			try {
-				jobNames = getJobNames();
+				jobNames = getJobNames(viewPath);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			Enumeration jobNamesEnum = jobProperties.propertyNames();
@@ -276,7 +298,7 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 					// ", componentJobNameSuffix = " + componentJobNameSuffix +
 					// ", jobProperties.containsKey = " +
 					// jobProperties.containsKey(fromJobName));
-					if (fromJobName.indexOf(componentJobNameSuffix)>0
+					if (fromJobName.indexOf(componentJobNameSuffix) > 0
 							&& jobProperties.containsKey(fromJobName)) {
 						// check if target job name exists
 						String newJobName = jobNames[i]
@@ -433,12 +455,21 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 				// getLog().debug(componentArray[i] + ", " +
 				// componentJobNameSuffix + ", " +
 				// buildURL.replaceAll("/build/*$", "/"));
-				jobProperties.put(getJbosstoolsJobnamePrefix()
-						+ componentArray[i] + componentJobNameSuffix,
-						buildURL.replaceAll("/build/*$", "/")
-								+ componentArray[i]);
-				// getLog().debug("Got: " + jobProperties.get("jbosstools-"
-				// + componentArray[i] + componentJobNameSuffix));
+
+				// if the prefix (jbosstools-3.2_trunk.component--)
+				// contains the suffix (_trunk), don't suffix again
+				if (getJbosstoolsJobnamePrefix()
+						.indexOf(componentJobNameSuffix) > 0) {
+					jobProperties.put(getJbosstoolsJobnamePrefix()
+							+ componentArray[i],
+							buildURL.replaceAll("/build/*$", "/")
+									+ componentArray[i]);
+				} else {
+					jobProperties.put(getJbosstoolsJobnamePrefix()
+							+ componentArray[i] + componentJobNameSuffix,
+							buildURL.replaceAll("/build/*$", "/")
+									+ componentArray[i]);
+				}
 			}
 		}
 	}
@@ -453,12 +484,12 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 				if (replaceExistingJob) {
 					updateJob(xmlFile, jobName, false);
 				} else {
-					getLog().warn(
+					getLog().info(
 							JOB_ALREADY_EXISTS
 									+ "'"
 									+ jobName
 									+ "'. Set replaceExistingJob = true to overwrite existing jobs.");
-//					throw new MojoExecutionException(error);
+					// throw new MojoExecutionException(error);
 				}
 			}
 		}
@@ -533,7 +564,6 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 		try {
 			configXML = getJobConfigXML(fromJobName);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -645,7 +675,7 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 			boolean getErrorMessage) {
 		Log log = getLog();
 		int resultCode = -1;
-		String resultString = "";
+		String responseBody = "";
 		PostMethod post = new PostMethod(jobURL);
 		HttpClient client = null;
 
@@ -690,7 +720,8 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 		try {
 			resultCode = client.executeMethod(post);
 			if (getErrorMessage) {
-				resultString = post.getResponseBodyAsString();
+
+				responseBody = getResponseBody(post);
 				// resultString = getErrorMessage(post, jobURL);
 			}
 			// if (verbose) {
@@ -702,6 +733,8 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch (DocumentException e) {
+			e.printStackTrace();
 		} finally {
 			post.releaseConnection();
 		}
@@ -709,7 +742,7 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 		// getLog().debug("Post result: " + resultCode);
 
 		if (getErrorMessage) {
-			return new String[] { resultCode + "", resultString };
+			return new String[] { resultCode + "", responseBody };
 		} else {
 			return new String[] { resultCode + "", "" };
 		}
@@ -718,9 +751,8 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 	public boolean jobExists(String jobName) {
 		String[] s = null;
 		try {
-			s = getJobNames();
+			s = getJobNames(viewPath);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		if (s != null && s.length > 0) {
@@ -737,11 +769,15 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 		return getJobNames("");
 	}
 
+	// note: URLSuffix is ignored when accessing a localhost Hudson instance, as
+	// we assume we're just testing and the view may not exist
 	public String[] getJobNames(String URLSuffix) throws Exception {
 		Log log = getLog();
 		HttpClient client = getHttpClient(username, password);
 
-		HttpMethod method = new GetMethod(hudsonURL + URLSuffix + "api/xml");
+		HttpMethod method = new GetMethod(hudsonURL
+				+ (hudsonURL.indexOf("localhost") >= 0 ? "" : URLSuffix)
+				+ "api/xml");
 		client.executeMethod(method);
 		checkResult(method.getStatusCode(), method.getURI());
 
@@ -855,16 +891,14 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 			client = getHttpClient(username, password);
 		}
 		HttpMethod method = new GetMethod(URL);
-		if (verbose) {
-			getLog().info("Config: " + URL);
-		}
+		// if (verbose) {
+		// getLog().info("Config: " + URL);
+		// }
 		try {
 			client.executeMethod(method);
 		} catch (HttpException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		checkResult(method.getStatusCode(), method.getURI());
@@ -872,7 +906,6 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 		try {
 			xml = new SAXReader().read(method.getResponseBodyAsStream());
 		} catch (DocumentException e) {
-			// TODO Auto-generated catch block
 			// e.printStackTrace();
 		}
 		return xml;
@@ -888,7 +921,7 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 		method.setFollowRedirects(true);
 		try {
 			client.executeMethod(method);
-			responseBody = method.getResponseBodyAsString();
+			responseBody = getResponseBody(method);
 		} catch (HttpException he) {
 			log.error("Http error connecting to '" + url + "'");
 			log.error(he.getMessage());
@@ -896,6 +929,8 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 		} catch (IOException ioe) {
 			log.error("Unable to connect to '" + url + "'");
 			System.exit(-3);
+		} catch (DocumentException e) {
+			e.printStackTrace();
 		}
 		if (verbose) {
 			log.debug("*** Request ***");
@@ -916,6 +951,37 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 		}
 		method.releaseConnection();
 		return responseBody;
+	}
+
+	public String getResponseBody(HttpMethod method) throws DocumentException,
+			IOException {
+		InputStream is = method.getResponseBodyAsStream();
+		Document dom = null;
+		String out = "";
+		if (is.available() > 0) {
+			dom = new SAXReader().read(is);
+			out = dom.asXML();
+		} else {
+			if (verbose) {
+				// 200: OK
+				// 400: Bad Request (job already exists, cannot createItem)
+				if (method.getStatusCode() != 200
+						&& method.getStatusCode() != 400) {
+					getLog().info(
+							"["
+									+ method.getStatusCode()
+									+ "] "
+									+ method.getStatusText()
+									+ " for "
+									+ method.getName()
+									+ " to "
+									+ method.getPath()
+									+ (method.getQueryString() != null ? "?"
+											+ method.getQueryString() : ""));
+				}
+			}
+		}
+		return out;
 	}
 
 	private static String readFileAsString(String filePath)

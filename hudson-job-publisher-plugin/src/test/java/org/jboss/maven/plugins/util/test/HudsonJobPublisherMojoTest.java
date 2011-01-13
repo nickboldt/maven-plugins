@@ -32,6 +32,8 @@ public class HudsonJobPublisherMojoTest {
 	private static boolean verbose;
 
 	private static String components = "TESTING";
+	
+	private static String viewPath = "";
 
 	// "archives, as, birt, bpel, bpmn, cdi, common, deltacloud, esb, examples, flow, freemarker, gwt, hibernatetools, jbpm, jmx, jsf, jst, maven, modeshape, portlet, profiler, runtime, seam, smooks, struts, tptp, usage, vpe, ws";
 
@@ -44,6 +46,8 @@ public class HudsonJobPublisherMojoTest {
 		publisher.setUsername("admin");
 		publisher.setPassword("none");
 		verbose = publisher.getVerbose();
+		publisher.setViewPath(""); // don't use a viewPath value because localhost doesn't have view/DevStudio_Trunk/ available
+		
 		if (verbose)
 			System.out.println(separatorLine);
 	}
@@ -91,7 +95,7 @@ public class HudsonJobPublisherMojoTest {
 		publisher.execute();
 		String[] names = null;
 		try {
-			names = publisher.getJobNames();
+			names = publisher.getJobNames(viewPath);
 			for (int i = 0; i < names.length; i++) {
 				// System.out.println(":: " + names[i]);
 			}
@@ -104,8 +108,7 @@ public class HudsonJobPublisherMojoTest {
 		for (int i = 0; i < componentArray.length; i++) {
 			boolean match = false;
 			for (int j = 0; j < names.length; j++) {
-				if (names[j].equals(HudsonJobPublisherMojo
-						.getJbosstoolsJobnamePrefix()
+				if (names[j].equals(publisher.getJbosstoolsJobnamePrefix()
 						+ componentArray[i]
 						+ publisher.getComponentJobNameSuffix())) {
 					match = true;
@@ -120,17 +123,17 @@ public class HudsonJobPublisherMojoTest {
 	public void testAddProperties() throws IOException, MojoExecutionException {
 		Properties jobProperties = new Properties();
 		jobProperties
-				.put("jbosstools-pi4soa-stable-branch",
+				.put("jbosstools-pi4soa-3.1_stable_branch",
 						"https://pi4soa.svn.sourceforge.net/svnroot/pi4soa/branches/pi4soa-3.1.x");
-		jobProperties.put("jbosstools-teiid-designer-stable-branch",
+		jobProperties.put("jbosstools-teiid-designer-7.1_stable_branch",
 				"http://anonsvn.jboss.org/repos/tdesigner/branches/7.1");
-		jobProperties.put("jbosstools-savara-stable-branch",
+		jobProperties.put("jbosstools-savara-1.1_stable_branch",
 				"http://anonsvn.jboss.org/repos/savara/branches/1.1.x");
 		publisher.setJobProperties(jobProperties);
 		publisher.execute();
 		String[] names = null;
 		try {
-			names = publisher.getJobNames();
+			names = publisher.getJobNames(viewPath);
 			for (int i = 0; i < names.length; i++) {
 				// System.out.println(":: " + names[i]);
 			}
@@ -160,7 +163,7 @@ public class HudsonJobPublisherMojoTest {
 		publisher.execute();
 		String[] names = null;
 		try {
-			names = publisher.getJobNames();
+			names = publisher.getJobNames(viewPath);
 			for (int i = 0; i < names.length; i++) {
 				// System.out.println(":: " + names[i]);
 			}
@@ -190,7 +193,7 @@ public class HudsonJobPublisherMojoTest {
 		}
 
 		try {
-			names = publisher.getJobNames();
+			names = publisher.getJobNames(viewPath);
 			for (int i = 0; i < names.length; i++) {
 				// System.out.println(":: " + names[i]);
 			}
@@ -209,7 +212,7 @@ public class HudsonJobPublisherMojoTest {
 		publisher.execute();
 		String[] names = null;
 		try {
-			names = publisher.getJobNames();
+			names = publisher.getJobNames(viewPath);
 			for (int i = 0; i < names.length; i++) {
 				// System.out.println(":: " + names[i]);
 			}
@@ -239,7 +242,7 @@ public class HudsonJobPublisherMojoTest {
 		}
 
 		try {
-			names = publisher.getJobNames();
+			names = publisher.getJobNames(viewPath);
 			for (int i = 0; i < names.length; i++) {
 				// System.out.println(":: " + names[i]);
 			}
