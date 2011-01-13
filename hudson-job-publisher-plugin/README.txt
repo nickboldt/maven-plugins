@@ -46,7 +46,7 @@ Now, to use this plugin in your own project:
 
 					<!-- default true: existing jobs will be overwritten; set false to throw 
 						an error if job exists -->
-					<replaceExistingJob>true</replaceExistingJob>
+					<replaceExistingJob>false</replaceExistingJob>
 					
 					<!-- local file path to use as template when publishing jobs -->
 					<jobTemplateFile>config.xml</jobTemplateFile>
@@ -54,23 +54,25 @@ Now, to use this plugin in your own project:
 					<!-- job configuration: one buildURL -->
 					<buildURL>http://svn.jboss.org/repos/jbosstools/branches/jbosstools-3.2.0.Beta2/build</buildURL>
 					<!-- then many identically configured components -->
+					<componentJobNamePrefix>jbosstools-3.2_trunk.component--</componentJobNamePrefix>
 					<components>archives, as, birt, bpel, bpmn, cdi, common,
 						deltacloud, esb, examples, flow, freemarker, gwt, hibernatetools,
 						jbpm, jmx, jsf, jst, maven, modeshape, portlet, profiler, runtime,
 						seam, smooks, struts, tptp, usage, vpe, ws</components>
-					<componentJobNameSuffix>-stable-branch</componentJobNameSuffix>
+					<componentJobNameSuffix>_trunk</componentJobNameSuffix>
+					<componentJobNameSuffix2>_stable_branch</componentJobNameSuffix2>
 					<!-- then some special-case components (not in JBT tree) -->
 					<properties>
 						<property>
-							<name>jbosstools-pi4soa-stable-branch</name>
+							<name>jbosstools-pi4soa-3.1_stable_branch</name>
 							<value>https://pi4soa.svn.sourceforge.net/svnroot/pi4soa/branches/pi4soa-3.1.x</value>
 						</property>
 						<property>
-							<name>jbosstools-teiid-designer-stable-branch</name>
+							<name>jbosstools-teiid-designer-7.1_stable_branch</name>
 							<value>http://anonsvn.jboss.org/repos/tdesigner/branches/7.1</value>
 						</property>
 						<property>
-							<name>jbosstools-savara-stable-branch</name>
+							<name>jbosstools-savara-1.1_stable_branch</name>
 							<value>http://anonsvn.jboss.org/repos/savara/branches/1.1.x</value>
 						</property>
 					</properties>
