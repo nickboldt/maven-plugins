@@ -237,6 +237,7 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 
 	private static final String JOB_ALREADY_EXISTS = "A job already exists with the name ";
 	private static final String JOB_NAME = "Job Name: ";
+	private static final String JOBNAME_PATTERN = "jbosstools-.+_trunk.*|devstudio-.+_trunk.*|jbosstools-.+_stable_branch.*|devstudio-.+_stable_branch.*";
 
 	public static String getJobName() {
 		return JOB_NAME;
@@ -266,7 +267,8 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 
 		if (verbose) {
 			try {
-				log.info(listJobsOnServer());
+				log.info(listJobsOnServer(hudsonURL + "api/xml",
+						JOBNAME_PATTERN));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -344,8 +346,15 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 						}
 
 						if (configXML != null) {
-							replaceSCMURLsInConfigXML(configXML, fromJobName,
-									newJobName);
+							getLog().info(
+									"Copy "
+											+ fromJobName
+											+ " to "
+											+ newJobName
+											+ " and replace config.xml values...");
+							configXML = replaceSCMURLsInConfigXML(configXML);
+							configXML = replaceDescriptionInConfigXML(configXML);
+							configXML = replaceChildProjectsInConfigXML(configXML);
 
 							// write to temp file
 							if (configXMLFile == null) {
@@ -374,14 +383,60 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 		}
 	}
 
+	private Document replaceChildProjectsInConfigXML(Document configXML) {
+		if (configXML
+				.selectSingleNode("/project/publishers/hudson.tasks.BuildTrigger/childProjects") != null) {
+			// getLog().info(
+			// "/project/publishers/hudson.tasks.BuildTrigger/childProjects: "
+			// + configXML
+			// .selectSingleNode(
+			// "/project/publishers/hudson.tasks.BuildTrigger/childProjects")
+			// .getText());
+			if (configXML
+					.selectSingleNode(
+							"/project/publishers/hudson.tasks.BuildTrigger/childProjects")
+					.getText().indexOf("_trunk") >= 0) {
+				configXML
+						.selectSingleNode(
+								"/project/publishers/hudson.tasks.BuildTrigger/childProjects")
+						.setText(
+								configXML
+										.selectSingleNode(
+												"/project/publishers/hudson.tasks.BuildTrigger/childProjects")
+										.getText()
+										.replaceAll("_trunk", "_stable_branch"));
+			}
+		}
+		return configXML;
+	}
+
+	private Document replaceDescriptionInConfigXML(Document configXML) {
+		// getLog().info(
+		// "/project/description: "
+		// + configXML.selectSingleNode("/project/description")
+		// .getText());
+		if (configXML
+				.selectSingleNode("/project/description")
+				.getText()
+				.indexOf(
+						"<a style=\"color:#FF9933\" href=\"http://download.jboss.org/jbosstools/builds/cascade/trunk.html\">") >= 0) {
+			// replace with stable colour and link
+			configXML.selectSingleNode("/project/description").setText(
+					configXML.selectSingleNode("/project/description")
+							.getText()
+							.replaceAll("color:#FF9933", "color:green")
+							.replaceAll("cascade/trunk.html", "cascade/"));
+		}
+		return configXML;
+	}
+
 	// edit the configXML document - replace the scm paths -
 	// look for /trunk/ and replace with the branch or tag value, for matching
 	// job names
-	public void replaceSCMURLsInConfigXML(Document configXML,
-			String fromJobName, String newJobName) {
-		getLog().info("Copy " + fromJobName + " to " + newJobName);
-		// getLog().debug(
-		// configXML
+	public Document replaceSCMURLsInConfigXML(Document configXML) {
+		// getLog().info(
+		// "/project/scm/locations/hudson.scm.SubversionSCM_-ModuleLocation[1]/remote: "
+		// + configXML
 		// .selectSingleNode(
 		// "/project/scm/locations/hudson.scm.SubversionSCM_-ModuleLocation[1]/remote")
 		// .getText());
@@ -395,13 +450,9 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 								.getText()
 								.replaceAll("/trunk/",
 										"/" + getBranchOrTag() + "/")); // sourcesURL
-		// getLog().debug(
-		// configXML
-		// .selectSingleNode(
-		// "/project/scm/locations/hudson.scm.SubversionSCM_-ModuleLocation[1]/remote")
-		// .getText());
-		// getLog().debug(
-		// configXML
+		// getLog().info(
+		// "/project/scm/locations/hudson.scm.SubversionSCM_-ModuleLocation[2]/remote: "
+		// + configXML
 		// .selectSingleNode(
 		// "/project/scm/locations/hudson.scm.SubversionSCM_-ModuleLocation[2]/remote")
 		// .getText());
@@ -415,12 +466,7 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 								.getText()
 								.replaceAll("/trunk/",
 										"/" + getBranchOrTag() + "/")); // buildURL
-		// getLog().debug(
-		// configXML
-		// .selectSingleNode(
-		// "/project/scm/locations/hudson.scm.SubversionSCM_-ModuleLocation[2]/remote")
-		// .getText());
-		// getLog().debug("\n");
+		return configXML;
 	}
 
 	public void createJobsFromJobList(String xmlFile)
@@ -791,23 +837,28 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 		return jobNames.toArray(new String[jobNames.size()]);
 	}
 
-	public String listJobsOnServer() throws Exception {
-		Log log = getLog();
+	// dom.selectSingleNode("/project/scm/locations/hudson.scm.SubversionSCM_-ModuleLocation[1]/remote")
+	public String listJobsOnServer(String url, String pattern) throws Exception {
 		HttpClient client = getHttpClient(username, password);
 
-		HttpMethod method = new GetMethod(hudsonURL + "api/xml");
+		HttpMethod method = new GetMethod(url);
 		client.executeMethod(method);
 		checkResult(method.getStatusCode(), method.getURI());
 
 		StringBuilder sb = new StringBuilder("\n");
+
+		// if (verbose) {
+		// getLog().info("Jobs URL: " + url);
+		// }
 		Document dom = new SAXReader().read(method.getResponseBodyAsStream());
 		// scan through the job list and print its status
+		int i = 0;
 		for (Element job : (List<Element>) dom.getRootElement().elements("job")) {
-			if (job.elementText("name").toString()
-					.indexOf(getJbosstoolsJobnamePrefix()) == 0) {
-				sb.append(String.format(getJobName() + "%s\tStatus: %s",
-						job.elementText("name"), job.elementText("color"))
-						+ "\n");
+			if (!job.elementText("name").toString().replaceAll(pattern, "")
+					.equals(job.elementText("name").toString())) {
+				i++;
+				sb.append(String.format("\n[%03d] " + "%s (%s)", i,
+						job.elementText("name"), job.elementText("color")));
 			}
 		}
 		return sb.toString();

@@ -256,7 +256,7 @@ public class HudsonJobPublisherMojoTest {
 	@Test
 	public void testCopyAndModifyJob() throws Exception, MojoExecutionException {
 		publisher.setComponentJobNameSuffix("_trunk");
-		publisher.setComponentJobNameSuffix2("_stable_build");
+		publisher.setComponentJobNameSuffix2("_stable_branch");
 		publisher.setBranchOrTag("branches/jbosstools-3.2.0.CR1");
 		testAddComponents();
 
