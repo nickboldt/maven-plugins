@@ -37,7 +37,7 @@ public class AppTest {
 
 	@Test
 	public void testExecute() throws IOException, DocumentException {
-		App.main(new String[] { "/home/nboldt/tru/jmx",
+		App.main(new String[] { "/home/nboldt/truu/product",
 				"org.jboss.tools:org.jboss.tools.parent.pom:0.0.1-SNAPSHOT",
 				"org.jboss.tools:org.jboss.tools.parent.pom:0.0.2-SNAPSHOT" });
 		Assert.assertTrue(true);

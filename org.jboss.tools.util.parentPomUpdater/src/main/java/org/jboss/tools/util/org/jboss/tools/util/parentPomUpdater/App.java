@@ -11,17 +11,9 @@ import org.codehaus.plexus.util.FileUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
-import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 
-import com.ibm.icu.util.CaseInsensitiveString;
-
-/**
- * Hello world!
- * 
- */
 public class App {
-	@SuppressWarnings("unchecked")
 	public static void main(String[] args) throws IOException,
 			DocumentException {
 		if (args.length < 3) {
@@ -66,12 +58,13 @@ public class App {
 		}
 
 		// fix dom, if there's a parent node
-		if (dom != null) {
+		if (dom != null && dom.asXML().toString().indexOf("<parent>")>0) {
 			Element node = dom.getRootElement().element("parent");
 			if (node != null) {
 				System.out.println("         Replace GAV in "
 						+ pom.toString());
 				for (Element elem : (List<Element>) node.elements()) {
+					Element oldElem = elem;
 					if (elem.getName().equals("groupId")) {
 						elem = replaceNodeText(elem, oldGAV[0], newGAV[0]);
 					} else if (elem.getName().equals("artifactId")) {
@@ -80,10 +73,10 @@ public class App {
 						elem = replaceNodeText(elem, oldGAV[2], newGAV[2]);
 					}
 				}
+				// write file
+				writeDomToFile(dom, pom);
 			}
 		}
-		// write file
-		writeDomToFile(dom, pom);
 	}
 
 	public static Element replaceNodeText(Element node, String oldText,
