@@ -58,9 +58,9 @@ public class App {
 		}
 
 		// fix dom, if there's a parent node
-		if (dom != null && dom.asXML().toString().indexOf("<parent>")>0) {
+		if (dom != null && dom.asXML().toString().indexOf("<parent>")>=0) {
 			Element node = dom.getRootElement().element("parent");
-			if (node != null) {
+			if (node != null && dom.asXML().toString().indexOf(oldGAV[0])>=0 && dom.asXML().toString().indexOf(oldGAV[1])>=0) {
 				System.out.println("         Replace GAV in "
 						+ pom.toString());
 				for (Element elem : (List<Element>) node.elements()) {
