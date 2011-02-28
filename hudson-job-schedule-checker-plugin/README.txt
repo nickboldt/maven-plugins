@@ -43,6 +43,12 @@ Now, to use this plugin in your own project:
 					<hudsonURL>http://localhost:8080/</hudsonURL>
 					<username>SET USERNAME HERE</username>
 					<password>SET PASSWORD HERE</password>
+					
+					<!-- to select a subset of jobs, use these filters; default none (all jobs on server!) -->
+                    <viewFilter>view/DevStudio_Stable_Branch/</viewFilter>
+
+                    <!-- default .* to select all -->
+                    <regexFilter>.*</regexFilter>
 
 				</configuration>
 			</plugin>

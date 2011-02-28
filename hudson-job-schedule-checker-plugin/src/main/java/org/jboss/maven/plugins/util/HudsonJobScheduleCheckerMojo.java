@@ -89,16 +89,38 @@ public class HudsonJobScheduleCheckerMojo extends AbstractMojo {
 		this.password = password;
 	}
 
-	// TODO: set as parameter
-	public String JOB_URL_SUFFIX =
+	/**
+	 * @parameter expression="${viewFilter}" default-value=""
+	 */
+	public String viewFilter = "";
+
 	// "view/DevStudio_Trunk/";
 	// "view/DevStudio_Stable_Branch/";
-	"view/SAVARA/";
+	// "view/SAVARA/";
 
-	// TODO: set as parameter
-	public String JOBNAME_PATTERN =
-	// "jbosstools-3.2_trunk.component--";
-	"jbosstools-.+_trunk.*|devstudio-.+_trunk.*";
+	public String getViewFilter() {
+		return viewFilter;
+	}
+
+	public void setViewFilter(String viewFilter) {
+		this.viewFilter = viewFilter;
+	}
+
+	/**
+	 * @parameter expression="${regexFilter}" default-value=".*"
+	 */
+	public String regexFilter = ".*";
+
+	// "jbosstools-.+_trunk.*|devstudio-.+_trunk.*";
+	// "jbosstools-.+_stable_branch.*|devstudio-.+_stable_branch.*";
+
+	public String getRegexFilter() {
+		return regexFilter;
+	}
+
+	public void setRegexFilter(String regexFilter) {
+		this.regexFilter = regexFilter;
+	}
 
 	private static final String INDENT = "   ";
 	public static final String JOB = "Job: ";
@@ -112,8 +134,7 @@ public class HudsonJobScheduleCheckerMojo extends AbstractMojo {
 
 		try {
 			getLog().info(
-					listJobsOnSecureServer(hudsonURL + JOB_URL_SUFFIX
-							+ "api/xml"));
+					listJobsOnSecureServer(hudsonURL + viewFilter + "api/xml"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -136,8 +157,7 @@ public class HudsonJobScheduleCheckerMojo extends AbstractMojo {
 		// scan through the job list and print its status
 		int i = 0;
 		for (Element job : (List<Element>) dom.getRootElement().elements("job")) {
-			if (!job.elementText("name").toString()
-					.replaceAll(JOBNAME_PATTERN, "")
+			if (!job.elementText("name").toString().replaceAll(regexFilter, "")
 					.equals(job.elementText("name").toString())) {
 				i++;
 				sb.append(String.format("\n[%03d] " + JOB + "%s (%s)", i,
@@ -157,7 +177,7 @@ public class HudsonJobScheduleCheckerMojo extends AbstractMojo {
 
 	public String getJobConfig(HttpClient client, String name) throws Exception {
 		StringBuilder sb = new StringBuilder();
-		HttpMethod method = new GetMethod(hudsonURL + JOB_URL_SUFFIX + "job/"
+		HttpMethod method = new GetMethod(hudsonURL + viewFilter + "job/"
 				+ name + "/config.xml");
 		if (verbose) {
 			getLog().info(
@@ -200,11 +220,11 @@ public class HudsonJobScheduleCheckerMojo extends AbstractMojo {
 
 	public String getJobDetail(HttpClient client, String name) throws Exception {
 		StringBuilder sb = new StringBuilder();
-		HttpMethod method = new GetMethod(hudsonURL + JOB_URL_SUFFIX + "job/"
+		HttpMethod method = new GetMethod(hudsonURL + viewFilter + "job/"
 				+ name + "/api/xml?depth=1");
 		if (verbose) {
 			getLog().info(
-					"Detail: " + hudsonURL + JOB_URL_SUFFIX + "job/" + name
+					"Detail: " + hudsonURL + viewFilter + "job/" + name
 							+ "/api/xml?depth=1");
 		}
 		client.executeMethod(method);
@@ -215,6 +235,31 @@ public class HudsonJobScheduleCheckerMojo extends AbstractMojo {
 				+ (dom.selectSingleNode("/freeStyleProject/buildable")
 						.getText().equals("true") ? "++ Enabled ++"
 						: "-- Disabled --") + "\n");
+
+		// /freeStyleProject/action/parameterDefinition/defaultParameterValue -
+		// check if tests enabled/disabled
+		for (Element node : (List<Element>) dom
+				.selectNodes("/freeStyleProject/action/parameterDefinition/defaultParameterValue")) {
+			if (node.elementText("name").equals("MAVEN_FLAGS")) {
+				sb.append(INDENT
+						+ (node.elementText("value").indexOf(
+								"-Dmaven.test.skip") >= 0 ? "-- Tests Disabled --"
+								: "++ Tests Enabled ++") + "\n");
+			}
+		}
+
+		// /freeStyleProject/action/parameterDefinition/defaultParameterValue
+		// - get all configuration params
+		if (verbose) {
+			sb.append("\n" + INDENT + "-=-=-=- Default Job Params -=-=-=-\n");
+			for (Element node : (List<Element>) dom
+					.selectNodes("/freeStyleProject/action/parameterDefinition/defaultParameterValue")) {
+				sb.append(String.format(INDENT + "%s  = %s",
+						node.elementText("name"), node.elementText("value"))
+						+ "\n");
+			}
+			sb.append(INDENT + "-=-=-=- -=-=-=- -=- -=-=-= -=-=-=-\n\n");
+		}
 
 		for (Element node : (List<Element>) dom
 				.selectNodes("/freeStyleProject/build")) {
