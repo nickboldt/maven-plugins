@@ -1,0 +1,1127 @@
+<freeStyleProject>
+	<action>
+		<parameterDefinition>
+			<defaultParameterValue>
+				<name>MAVEN_FLAGS</name>
+				<value>clean install -B -U -fae -e
+					-Dmaven.repo.local=${WORKSPACE}/m2-repository -P
+					helios-local-target,jbosstools-nightly-trunk,hudson</value>
+			</defaultParameterValue>
+			<description>Pass in lifecycle phase and extra flags to Maven, such
+				as:
+				&lt;pre&gt;
+				clean :: clean before building *
+				integration-test :: build and test *
+				install :: build, test, and install into m2 repo *
+				osgi-test:test :: just (re-)run test(s)
+
+				-P helios-no-target :: don't use .target file to provision target;
+				instead generate on the fly from MANIFEST.MF and feature.xml files
+				-P galileo :: enable galileo dependencies
+				-P hudson :: enable hudson build ID in feature/plugin qualifiers
+				-P !helios :: disable helios target (not available)
+
+				-Dmaven.test.skip :: skip compiling and running tests
+				-Dmaven.test.skip.exec :: to compile but not run tests in conjunction with
+				integration-test or install phase
+
+				-Dmaven.repo.local=${WORKSPACE}/m2-repository :: path to local m2
+				repo
+
+				-fae :: fail at end
+				-fn :: fail never
+
+				-o :: offline
+				-B :: batch (non-interactive) mode
+				-U :: check for updates
+				-e :: if error occurs, dump stack into console
+
+				-q :: quieter output&lt;/pre&gt; </description>
+			<name>MAVEN_FLAGS</name>
+			<type>StringParameterDefinition</type>
+		</parameterDefinition>
+	</action>
+	<action></action>
+	<action></action>
+	<action></action>
+	<action></action>
+	<action></action>
+	<action></action>
+	<action></action>
+	<description>Nightly build using Tycho, monitoring SVN every 6 hrs for
+		changes.
+
+		&lt;h2&gt;&lt;a style="color:green"
+		href="http://download.jboss.org/jbosstools/builds/cascade/"&gt;Build
+		Job Cascade &amp;amp; Results&lt;/a&gt;&lt;/h2&gt;</description>
+	<displayName>jbosstools-3.2_stable_branch.component--examples
+	</displayName>
+	<name>jbosstools-3.2_stable_branch.component--examples</name>
+	<url>http://hudson.qa.jboss.com/hudson/view/DevStudio_Stable_Branch/job/jbosstools-3.2_stable_branch.component--examples/
+	</url>
+	<buildable>true</buildable>
+	<build>
+		<action>
+			<parameter>
+				<name>MAVEN_FLAGS</name>
+				<value>clean install -B -U -fae -e
+					-Dmaven.repo.local=${WORKSPACE}/m2-repository -P
+					helios-local-target,jbosstools-nightly-trunk,hudson</value>
+			</parameter>
+		</action>
+		<action>
+			<cause>
+				<shortDescription>Started by upstream project
+					"jbosstools-3.2_stable_branch.component--tests" build number 14
+				</shortDescription>
+				<upstreamBuild>14</upstreamBuild>
+				<upstreamProject>jbosstools-3.2_stable_branch.component--tests
+				</upstreamProject>
+				<upstreamUrl>job/jbosstools-3.2_stable_branch.component--tests/
+				</upstreamUrl>
+			</cause>
+		</action>
+		<action></action>
+		<action></action>
+		<action>
+			<failCount>0</failCount>
+			<skipCount>0</skipCount>
+			<totalCount>1</totalCount>
+			<urlName>testReport</urlName>
+		</action>
+		<action></action>
+		<artifact>
+			<displayPath>jbosstools-3.2_stable_branch.component--examples-Update-SNAPSHOT.zip
+			</displayPath>
+			<fileName>jbosstools-3.2_stable_branch.component--examples-Update-SNAPSHOT.zip
+			</fileName>
+			<relativePath>results/jbosstools-3.2_stable_branch.component--examples/all/jbosstools-3.2_stable_branch.component--examples-Update-SNAPSHOT.zip
+			</relativePath>
+		</artifact>
+		<building>false</building>
+		<duration>617683</duration>
+		<fullDisplayName>jbosstools-3.2_stable_branch.component--examples #29
+		</fullDisplayName>
+		<id>2011-02-26_04-51-23</id>
+		<keepLog>false</keepLog>
+		<number>29</number>
+		<result>SUCCESS</result>
+		<timestamp>1298713883708</timestamp>
+		<url>http://hudson.qa.jboss.com/hudson/view/DevStudio_Stable_Branch/job/jbosstools-3.2_stable_branch.component--examples/29/
+		</url>
+		<builtOn>vmg20-rhel5-x86</builtOn>
+		<changeSet>
+			<kind>svn</kind>
+			<revision>
+				<module>http://anonsvn.jboss.org/repos/jbosstools/branches/jbosstools-3.2.x/build
+				</module>
+				<revision>29160</revision>
+			</revision>
+			<revision>
+				<module>http://anonsvn.jboss.org/repos/jbosstools/branches/jbosstools-3.2.x/examples
+				</module>
+				<revision>28457</revision>
+			</revision>
+		</changeSet>
+	</build>
+	<color>blue</color>
+	<firstBuild>
+		<action>
+			<parameter>
+				<name>MAVEN_FLAGS</name>
+				<value>clean install -B -U -fae -e
+					-Dmaven.repo.local=${WORKSPACE}/m2-repository -P
+					helios-local-target,jbosstools-nightly-trunk,hudson</value>
+			</parameter>
+		</action>
+		<action>
+			<cause>
+				<shortDescription>Started by upstream project
+					"jbosstools-3.2_stable_branch.component--tests" build number 14
+				</shortDescription>
+				<upstreamBuild>14</upstreamBuild>
+				<upstreamProject>jbosstools-3.2_stable_branch.component--tests
+				</upstreamProject>
+				<upstreamUrl>job/jbosstools-3.2_stable_branch.component--tests/
+				</upstreamUrl>
+			</cause>
+		</action>
+		<action></action>
+		<action></action>
+		<action>
+			<failCount>0</failCount>
+			<skipCount>0</skipCount>
+			<totalCount>1</totalCount>
+			<urlName>testReport</urlName>
+		</action>
+		<action></action>
+		<artifact>
+			<displayPath>jbosstools-3.2_stable_branch.component--examples-Update-SNAPSHOT.zip
+			</displayPath>
+			<fileName>jbosstools-3.2_stable_branch.component--examples-Update-SNAPSHOT.zip
+			</fileName>
+			<relativePath>results/jbosstools-3.2_stable_branch.component--examples/all/jbosstools-3.2_stable_branch.component--examples-Update-SNAPSHOT.zip
+			</relativePath>
+		</artifact>
+		<building>false</building>
+		<duration>617683</duration>
+		<fullDisplayName>jbosstools-3.2_stable_branch.component--examples #29
+		</fullDisplayName>
+		<id>2011-02-26_04-51-23</id>
+		<keepLog>false</keepLog>
+		<number>29</number>
+		<result>SUCCESS</result>
+		<timestamp>1298713883708</timestamp>
+		<url>http://hudson.qa.jboss.com/hudson/view/DevStudio_Stable_Branch/job/jbosstools-3.2_stable_branch.component--examples/29/
+		</url>
+		<builtOn>vmg20-rhel5-x86</builtOn>
+		<changeSet>
+			<kind>svn</kind>
+			<revision>
+				<module>http://anonsvn.jboss.org/repos/jbosstools/branches/jbosstools-3.2.x/build
+				</module>
+				<revision>29160</revision>
+			</revision>
+			<revision>
+				<module>http://anonsvn.jboss.org/repos/jbosstools/branches/jbosstools-3.2.x/examples
+				</module>
+				<revision>28457</revision>
+			</revision>
+		</changeSet>
+	</firstBuild>
+	<healthReport>
+		<description>Test Result: 0 tests failing out of a total of 1 test.
+		</description>
+		<iconUrl>health-80plus.gif</iconUrl>
+		<score>100</score>
+	</healthReport>
+	<healthReport>
+		<description>Build stability: No recent builds failed.</description>
+		<iconUrl>health-80plus.gif</iconUrl>
+		<score>100</score>
+	</healthReport>
+	<inQueue>false</inQueue>
+	<keepDependencies>false</keepDependencies>
+	<lastBuild>
+		<action>
+			<parameter>
+				<name>MAVEN_FLAGS</name>
+				<value>clean install -B -U -fae -e
+					-Dmaven.repo.local=${WORKSPACE}/m2-repository -P
+					helios-local-target,jbosstools-nightly-trunk,hudson</value>
+			</parameter>
+		</action>
+		<action>
+			<cause>
+				<shortDescription>Started by upstream project
+					"jbosstools-3.2_stable_branch.component--tests" build number 14
+				</shortDescription>
+				<upstreamBuild>14</upstreamBuild>
+				<upstreamProject>jbosstools-3.2_stable_branch.component--tests
+				</upstreamProject>
+				<upstreamUrl>job/jbosstools-3.2_stable_branch.component--tests/
+				</upstreamUrl>
+			</cause>
+		</action>
+		<action></action>
+		<action></action>
+		<action>
+			<failCount>0</failCount>
+			<skipCount>0</skipCount>
+			<totalCount>1</totalCount>
+			<urlName>testReport</urlName>
+		</action>
+		<action></action>
+		<artifact>
+			<displayPath>jbosstools-3.2_stable_branch.component--examples-Update-SNAPSHOT.zip
+			</displayPath>
+			<fileName>jbosstools-3.2_stable_branch.component--examples-Update-SNAPSHOT.zip
+			</fileName>
+			<relativePath>results/jbosstools-3.2_stable_branch.component--examples/all/jbosstools-3.2_stable_branch.component--examples-Update-SNAPSHOT.zip
+			</relativePath>
+		</artifact>
+		<building>false</building>
+		<duration>617683</duration>
+		<fullDisplayName>jbosstools-3.2_stable_branch.component--examples #29
+		</fullDisplayName>
+		<id>2011-02-26_04-51-23</id>
+		<keepLog>false</keepLog>
+		<number>29</number>
+		<result>SUCCESS</result>
+		<timestamp>1298713883708</timestamp>
+		<url>http://hudson.qa.jboss.com/hudson/view/DevStudio_Stable_Branch/job/jbosstools-3.2_stable_branch.component--examples/29/
+		</url>
+		<builtOn>vmg20-rhel5-x86</builtOn>
+		<changeSet>
+			<kind>svn</kind>
+			<revision>
+				<module>http://anonsvn.jboss.org/repos/jbosstools/branches/jbosstools-3.2.x/build
+				</module>
+				<revision>29160</revision>
+			</revision>
+			<revision>
+				<module>http://anonsvn.jboss.org/repos/jbosstools/branches/jbosstools-3.2.x/examples
+				</module>
+				<revision>28457</revision>
+			</revision>
+		</changeSet>
+	</lastBuild>
+	<lastCompletedBuild>
+		<action>
+			<parameter>
+				<name>MAVEN_FLAGS</name>
+				<value>clean install -B -U -fae -e
+					-Dmaven.repo.local=${WORKSPACE}/m2-repository -P
+					helios-local-target,jbosstools-nightly-trunk,hudson</value>
+			</parameter>
+		</action>
+		<action>
+			<cause>
+				<shortDescription>Started by upstream project
+					"jbosstools-3.2_stable_branch.component--tests" build number 14
+				</shortDescription>
+				<upstreamBuild>14</upstreamBuild>
+				<upstreamProject>jbosstools-3.2_stable_branch.component--tests
+				</upstreamProject>
+				<upstreamUrl>job/jbosstools-3.2_stable_branch.component--tests/
+				</upstreamUrl>
+			</cause>
+		</action>
+		<action></action>
+		<action></action>
+		<action>
+			<failCount>0</failCount>
+			<skipCount>0</skipCount>
+			<totalCount>1</totalCount>
+			<urlName>testReport</urlName>
+		</action>
+		<action></action>
+		<artifact>
+			<displayPath>jbosstools-3.2_stable_branch.component--examples-Update-SNAPSHOT.zip
+			</displayPath>
+			<fileName>jbosstools-3.2_stable_branch.component--examples-Update-SNAPSHOT.zip
+			</fileName>
+			<relativePath>results/jbosstools-3.2_stable_branch.component--examples/all/jbosstools-3.2_stable_branch.component--examples-Update-SNAPSHOT.zip
+			</relativePath>
+		</artifact>
+		<building>false</building>
+		<duration>617683</duration>
+		<fullDisplayName>jbosstools-3.2_stable_branch.component--examples #29
+		</fullDisplayName>
+		<id>2011-02-26_04-51-23</id>
+		<keepLog>false</keepLog>
+		<number>29</number>
+		<result>SUCCESS</result>
+		<timestamp>1298713883708</timestamp>
+		<url>http://hudson.qa.jboss.com/hudson/view/DevStudio_Stable_Branch/job/jbosstools-3.2_stable_branch.component--examples/29/
+		</url>
+		<builtOn>vmg20-rhel5-x86</builtOn>
+		<changeSet>
+			<kind>svn</kind>
+			<revision>
+				<module>http://anonsvn.jboss.org/repos/jbosstools/branches/jbosstools-3.2.x/build
+				</module>
+				<revision>29160</revision>
+			</revision>
+			<revision>
+				<module>http://anonsvn.jboss.org/repos/jbosstools/branches/jbosstools-3.2.x/examples
+				</module>
+				<revision>28457</revision>
+			</revision>
+		</changeSet>
+	</lastCompletedBuild>
+	<lastStableBuild>
+		<action>
+			<parameter>
+				<name>MAVEN_FLAGS</name>
+				<value>clean install -B -U -fae -e
+					-Dmaven.repo.local=${WORKSPACE}/m2-repository -P
+					helios-local-target,jbosstools-nightly-trunk,hudson</value>
+			</parameter>
+		</action>
+		<action>
+			<cause>
+				<shortDescription>Started by upstream project
+					"jbosstools-3.2_stable_branch.component--tests" build number 14
+				</shortDescription>
+				<upstreamBuild>14</upstreamBuild>
+				<upstreamProject>jbosstools-3.2_stable_branch.component--tests
+				</upstreamProject>
+				<upstreamUrl>job/jbosstools-3.2_stable_branch.component--tests/
+				</upstreamUrl>
+			</cause>
+		</action>
+		<action></action>
+		<action></action>
+		<action>
+			<failCount>0</failCount>
+			<skipCount>0</skipCount>
+			<totalCount>1</totalCount>
+			<urlName>testReport</urlName>
+		</action>
+		<action></action>
+		<artifact>
+			<displayPath>jbosstools-3.2_stable_branch.component--examples-Update-SNAPSHOT.zip
+			</displayPath>
+			<fileName>jbosstools-3.2_stable_branch.component--examples-Update-SNAPSHOT.zip
+			</fileName>
+			<relativePath>results/jbosstools-3.2_stable_branch.component--examples/all/jbosstools-3.2_stable_branch.component--examples-Update-SNAPSHOT.zip
+			</relativePath>
+		</artifact>
+		<building>false</building>
+		<duration>617683</duration>
+		<fullDisplayName>jbosstools-3.2_stable_branch.component--examples #29
+		</fullDisplayName>
+		<id>2011-02-26_04-51-23</id>
+		<keepLog>false</keepLog>
+		<number>29</number>
+		<result>SUCCESS</result>
+		<timestamp>1298713883708</timestamp>
+		<url>http://hudson.qa.jboss.com/hudson/view/DevStudio_Stable_Branch/job/jbosstools-3.2_stable_branch.component--examples/29/
+		</url>
+		<builtOn>vmg20-rhel5-x86</builtOn>
+		<changeSet>
+			<kind>svn</kind>
+			<revision>
+				<module>http://anonsvn.jboss.org/repos/jbosstools/branches/jbosstools-3.2.x/build
+				</module>
+				<revision>29160</revision>
+			</revision>
+			<revision>
+				<module>http://anonsvn.jboss.org/repos/jbosstools/branches/jbosstools-3.2.x/examples
+				</module>
+				<revision>28457</revision>
+			</revision>
+		</changeSet>
+	</lastStableBuild>
+	<lastSuccessfulBuild>
+		<action>
+			<parameter>
+				<name>MAVEN_FLAGS</name>
+				<value>clean install -B -U -fae -e
+					-Dmaven.repo.local=${WORKSPACE}/m2-repository -P
+					helios-local-target,jbosstools-nightly-trunk,hudson</value>
+			</parameter>
+		</action>
+		<action>
+			<cause>
+				<shortDescription>Started by upstream project
+					"jbosstools-3.2_stable_branch.component--tests" build number 14
+				</shortDescription>
+				<upstreamBuild>14</upstreamBuild>
+				<upstreamProject>jbosstools-3.2_stable_branch.component--tests
+				</upstreamProject>
+				<upstreamUrl>job/jbosstools-3.2_stable_branch.component--tests/
+				</upstreamUrl>
+			</cause>
+		</action>
+		<action></action>
+		<action></action>
+		<action>
+			<failCount>0</failCount>
+			<skipCount>0</skipCount>
+			<totalCount>1</totalCount>
+			<urlName>testReport</urlName>
+		</action>
+		<action></action>
+		<artifact>
+			<displayPath>jbosstools-3.2_stable_branch.component--examples-Update-SNAPSHOT.zip
+			</displayPath>
+			<fileName>jbosstools-3.2_stable_branch.component--examples-Update-SNAPSHOT.zip
+			</fileName>
+			<relativePath>results/jbosstools-3.2_stable_branch.component--examples/all/jbosstools-3.2_stable_branch.component--examples-Update-SNAPSHOT.zip
+			</relativePath>
+		</artifact>
+		<building>false</building>
+		<duration>617683</duration>
+		<fullDisplayName>jbosstools-3.2_stable_branch.component--examples #29
+		</fullDisplayName>
+		<id>2011-02-26_04-51-23</id>
+		<keepLog>false</keepLog>
+		<number>29</number>
+		<result>SUCCESS</result>
+		<timestamp>1298713883708</timestamp>
+		<url>http://hudson.qa.jboss.com/hudson/view/DevStudio_Stable_Branch/job/jbosstools-3.2_stable_branch.component--examples/29/
+		</url>
+		<builtOn>vmg20-rhel5-x86</builtOn>
+		<changeSet>
+			<kind>svn</kind>
+			<revision>
+				<module>http://anonsvn.jboss.org/repos/jbosstools/branches/jbosstools-3.2.x/build
+				</module>
+				<revision>29160</revision>
+			</revision>
+			<revision>
+				<module>http://anonsvn.jboss.org/repos/jbosstools/branches/jbosstools-3.2.x/examples
+				</module>
+				<revision>28457</revision>
+			</revision>
+		</changeSet>
+	</lastSuccessfulBuild>
+	<nextBuildNumber>30</nextBuildNumber>
+	<property>
+		<parameterDefinition>
+			<defaultParameterValue>
+				<name>MAVEN_FLAGS</name>
+				<value>clean install -B -U -fae -e
+					-Dmaven.repo.local=${WORKSPACE}/m2-repository -P
+					helios-local-target,jbosstools-nightly-trunk,hudson</value>
+			</defaultParameterValue>
+			<description>Pass in lifecycle phase and extra flags to Maven, such
+				as:
+
+				&lt;pre&gt;
+				clean :: clean before building *
+				integration-test :: build and test *
+				install :: build, test, and install into m2 repo *
+				osgi-test:test :: just (re-)run test(s)
+
+				-P helios-no-target :: don't use .target file to provision target;
+				instead generate on the fly from MANIFEST.MF and feature.xml files
+				-P galileo :: enable galileo dependencies
+				-P hudson :: enable hudson build ID in feature/plugin qualifiers
+				-P !helios :: disable helios target (not available)
+
+				-Dmaven.test.skip :: skip compiling and running tests
+				-Dmaven.test.skip.exec :: to compile but not run tests in conjunction with
+				integration-test or install phase
+
+				-Dmaven.repo.local=${WORKSPACE}/m2-repository :: path to local m2
+				repo
+
+				-fae :: fail at end
+				-fn :: fail never
+
+				-o :: offline
+				-B :: batch (non-interactive) mode
+				-U :: check for updates
+				-e :: if error occurs, dump stack into console
+
+				-q :: quieter output&lt;/pre&gt; </description>
+			<name>MAVEN_FLAGS</name>
+			<type>StringParameterDefinition</type>
+		</parameterDefinition>
+	</property>
+	<property></property>
+	<property></property>
+	<property></property>
+	<concurrentBuild>false</concurrentBuild>
+	<downstreamProject>
+		<action>
+			<parameterDefinition>
+				<defaultParameterValue>
+					<value>clean install -B -U -fae -P helios-local-target,hudson
+						-Dmaven.repo.local=${WORKSPACE}/m2-repository</value>
+				</defaultParameterValue>
+				<description>Pass in lifecycle phase and extra flags to Maven, such
+					as:
+					&lt;pre&gt;
+					clean :: clean before building *
+					integration-test :: build and test *
+					install :: build, test, and install into m2 repo *
+					osgi-test:test :: just (re-)run test(s)
+
+					-Dmaven.test.skip :: skip compiling and running tests
+					-Dmaven.test.skip.exec :: to compile but not run tests in conjunction with
+					integration-test or install phase
+
+					-P helios :: use .target file to provision target
+					-P helios-no-target :: don't use .target file to provision target;
+					instead generate on the fly from MANIFEST.MF and feature.xml files
+					-P helios-local-target :: use
+					/home/hudson/static_build_env/jbds/target-platform/e36-wtp322.target
+					as target against which to resolve deps
+					-P hudson :: add hudson job # to generated plugin/feature qualifiers
+
+					-Dmaven.repo.local=${WORKSPACE}/m2-repository :: path to local m2
+					repo
+
+					-fae :: fail at end
+					-fn :: fail never
+
+					-o :: offline
+					-B :: batch (non-interactive) mode
+					-U :: check for updates
+					-e :: if error occurs, dump stack into console
+
+					-q :: quieter output&lt;/pre&gt; </description>
+				<name>MAVEN_FLAGS</name>
+				<type>StringParameterDefinition</type>
+			</parameterDefinition>
+			<parameterDefinition>
+				<defaultParameterValue>
+					<value>Yes</value>
+				</defaultParameterValue>
+				<description>If a release, name zip w/ timestamp and build ID;
+					otherwise call it "SNAPSHOT"</description>
+				<name>RELEASE</name>
+				<type>ChoiceParameterDefinition</type>
+				<choice>Yes</choice>
+				<choice>No</choice>
+			</parameterDefinition>
+			<parameterDefinition>
+				<defaultParameterValue>
+					<value>Development Milestone</value>
+				</defaultParameterValue>
+				<description></description>
+				<name>update.site.description</name>
+				<type>ChoiceParameterDefinition</type>
+				<choice>Development Milestone</choice>
+				<choice>Nightly Build</choice>
+				<choice>Stable Release</choice>
+			</parameterDefinition>
+		</action>
+		<action></action>
+		<action></action>
+		<action></action>
+		<action></action>
+		<action></action>
+		<description>Tycho-based build, monitoring SVN for changes.
+
+
+			&lt;p&gt;&lt;i&gt;Build should take ~30min if sources local;
+			+30-90min for SVN checkout, and 4-6 hrs for tests.&lt;/i&gt;
+
+			&lt;h2&gt;&lt;a style="color:green"
+			href="http://download.jboss.org/jbosstools/builds/cascade/"&gt;Build
+			Job Cascade &amp;amp; Results&lt;/a&gt;&lt;/h2&gt; </description>
+		<displayName>jbosstools-3.2_stable_branch.aggregate</displayName>
+		<name>jbosstools-3.2_stable_branch.aggregate</name>
+		<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/
+		</url>
+		<buildable>true</buildable>
+		<build>
+			<number>334</number>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/334/
+			</url>
+		</build>
+		<build>
+			<number>333</number>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/333/
+			</url>
+		</build>
+		<build>
+			<number>332</number>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/332/
+			</url>
+		</build>
+		<build>
+			<number>331</number>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/331/
+			</url>
+		</build>
+		<build>
+			<number>330</number>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/330/
+			</url>
+		</build>
+		<build>
+			<number>329</number>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/329/
+			</url>
+		</build>
+		<build>
+			<number>311</number>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/311/
+			</url>
+		</build>
+		<build>
+			<number>50</number>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/50/
+			</url>
+		</build>
+		<color>blue</color>
+		<firstBuild>
+			<number>50</number>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/50/
+			</url>
+		</firstBuild>
+		<healthReport>
+			<description>Build stability: No recent builds failed.</description>
+			<iconUrl>health-80plus.gif</iconUrl>
+			<score>100</score>
+		</healthReport>
+		<inQueue>false</inQueue>
+		<keepDependencies>false</keepDependencies>
+		<lastBuild>
+			<number>334</number>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/334/
+			</url>
+		</lastBuild>
+		<lastCompletedBuild>
+			<number>334</number>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/334/
+			</url>
+		</lastCompletedBuild>
+		<lastStableBuild>
+			<number>334</number>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/334/
+			</url>
+		</lastStableBuild>
+		<lastSuccessfulBuild>
+			<number>334</number>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/334/
+			</url>
+		</lastSuccessfulBuild>
+		<nextBuildNumber>335</nextBuildNumber>
+		<property>
+			<parameterDefinition>
+				<defaultParameterValue>
+					<name>MAVEN_FLAGS</name>
+					<value>clean install -B -U -fae -P helios-local-target,hudson
+						-Dmaven.repo.local=${WORKSPACE}/m2-repository</value>
+				</defaultParameterValue>
+				<description>Pass in lifecycle phase and extra flags to Maven, such
+					as:
+
+					&lt;pre&gt;
+					clean :: clean before building *
+					integration-test :: build and test *
+					install :: build, test, and install into m2 repo *
+					osgi-test:test :: just (re-)run test(s)
+
+					-Dmaven.test.skip :: skip compiling and running tests
+					-Dmaven.test.skip.exec :: to compile but not run tests in conjunction with
+					integration-test or install phase
+
+					-P helios :: use .target file to provision target
+					-P helios-no-target :: don't use .target file to provision target;
+					instead generate on the fly from MANIFEST.MF and feature.xml files
+					-P helios-local-target :: use
+					/home/hudson/static_build_env/jbds/target-platform/e36-wtp322.target
+					as target against which to resolve deps
+					-P hudson :: add hudson job # to generated plugin/feature qualifiers
+
+					-Dmaven.repo.local=${WORKSPACE}/m2-repository :: path to local m2
+					repo
+
+					-fae :: fail at end
+					-fn :: fail never
+
+					-o :: offline
+					-B :: batch (non-interactive) mode
+					-U :: check for updates
+					-e :: if error occurs, dump stack into console
+
+					-q :: quieter output&lt;/pre&gt; </description>
+				<name>MAVEN_FLAGS</name>
+				<type>StringParameterDefinition</type>
+			</parameterDefinition>
+			<parameterDefinition>
+				<defaultParameterValue>
+					<name>RELEASE</name>
+					<value>Yes</value>
+				</defaultParameterValue>
+				<description>If a release, name zip w/ timestamp and build ID;
+					otherwise call it "SNAPSHOT"</description>
+				<name>RELEASE</name>
+				<type>ChoiceParameterDefinition</type>
+				<choice>Yes</choice>
+				<choice>No</choice>
+			</parameterDefinition>
+			<parameterDefinition>
+				<defaultParameterValue>
+					<name>update.site.description</name>
+					<value>Development Milestone</value>
+				</defaultParameterValue>
+				<description></description>
+				<name>update.site.description</name>
+				<type>ChoiceParameterDefinition</type>
+				<choice>Development Milestone</choice>
+				<choice>Nightly Build</choice>
+				<choice>Stable Release</choice>
+			</parameterDefinition>
+		</property>
+		<property></property>
+		<property></property>
+		<property></property>
+		<concurrentBuild>false</concurrentBuild>
+		<downstreamProject>
+			<name>devstudio-4.0_stable_branch.updatesite</name>
+			<url>http://hudson.qa.jboss.com/hudson/job/devstudio-4.0_stable_branch.updatesite/
+			</url>
+			<color>blue</color>
+		</downstreamProject>
+		<downstreamProject>
+			<name>zz_disabled_jbosstools-3.2_stable_branch.aggregate-publish
+			</name>
+			<url>http://hudson.qa.jboss.com/hudson/job/zz_disabled_jbosstools-3.2_stable_branch.aggregate-publish/
+			</url>
+			<color>disabled</color>
+		</downstreamProject>
+		<scm></scm>
+		<upstreamProject>
+			<name>jbosstools-3.2_stable_branch.component--birt</name>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--birt/
+			</url>
+			<color>blue</color>
+		</upstreamProject>
+		<upstreamProject>
+			<name>jbosstools-3.2_stable_branch.component--bpel</name>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--bpel/
+			</url>
+			<color>blue</color>
+		</upstreamProject>
+		<upstreamProject>
+			<name>jbosstools-3.2_stable_branch.component--deltacloud</name>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--deltacloud/
+			</url>
+			<color>blue</color>
+		</upstreamProject>
+		<upstreamProject>
+			<name>jbosstools-3.2_stable_branch.component--esb</name>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--esb/
+			</url>
+			<color>blue</color>
+		</upstreamProject>
+		<upstreamProject>
+			<name>jbosstools-3.2_stable_branch.component--examples</name>
+			<url>http://hudson.qa.jboss.com/hudson/view/DevStudio_Stable_Branch/job/jbosstools-3.2_stable_branch.component--examples/
+			</url>
+			<color>blue</color>
+		</upstreamProject>
+		<upstreamProject>
+			<name>jbosstools-3.2_stable_branch.component--gwt</name>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--gwt/
+			</url>
+			<color>blue</color>
+		</upstreamProject>
+		<upstreamProject>
+			<name>jbosstools-3.2_stable_branch.component--jbpm</name>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--jbpm/
+			</url>
+			<color>blue</color>
+		</upstreamProject>
+		<upstreamProject>
+			<name>jbosstools-3.2_stable_branch.component--maven</name>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--maven/
+			</url>
+			<color>blue</color>
+		</upstreamProject>
+		<upstreamProject>
+			<name>jbosstools-3.2_stable_branch.component--modeshape</name>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--modeshape/
+			</url>
+			<color>blue</color>
+		</upstreamProject>
+		<upstreamProject>
+			<name>jbosstools-3.2_stable_branch.component--portlet</name>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--portlet/
+			</url>
+			<color>blue</color>
+		</upstreamProject>
+		<upstreamProject>
+			<name>jbosstools-3.2_stable_branch.component--profiler</name>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--profiler/
+			</url>
+			<color>blue</color>
+		</upstreamProject>
+		<upstreamProject>
+			<name>jbosstools-3.2_stable_branch.component--runtime</name>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--runtime/
+			</url>
+			<color>blue</color>
+		</upstreamProject>
+		<upstreamProject>
+			<name>jbosstools-3.2_stable_branch.component--smooks</name>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--smooks/
+			</url>
+			<color>blue</color>
+		</upstreamProject>
+		<upstreamProject>
+			<name>jbosstools-3.2_stable_branch.component--struts</name>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--struts/
+			</url>
+			<color>blue</color>
+		</upstreamProject>
+		<upstreamProject>
+			<name>jbosstools-3.2_stable_branch.component--tptp</name>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--tptp/
+			</url>
+			<color>blue</color>
+		</upstreamProject>
+		<upstreamProject>
+			<name>jbosstools-3.2_stable_branch.component--usage</name>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--usage/
+			</url>
+			<color>blue</color>
+		</upstreamProject>
+		<upstreamProject>
+			<name>jbosstools-3.2_stable_branch.component--ws</name>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--ws/
+			</url>
+			<color>blue</color>
+		</upstreamProject>
+		<upstreamProject>
+			<name>jbosstools-drools-5.2_stable_branch</name>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-drools-5.2_stable_branch/
+			</url>
+			<color>disabled</color>
+		</upstreamProject>
+		<upstreamProject>
+			<name>jbosstools-pi4soa-3.1_stable_branch</name>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-pi4soa-3.1_stable_branch/
+			</url>
+			<color>blue</color>
+		</upstreamProject>
+		<upstreamProject>
+			<name>jbosstools-savara-1.1_stable_branch</name>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-savara-1.1_stable_branch/
+			</url>
+			<color>blue</color>
+		</upstreamProject>
+		<upstreamProject>
+			<name>jbosstools-teiid-designer-7.1_stable_branch</name>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-teiid-designer-7.1_stable_branch/
+			</url>
+			<color>blue</color>
+		</upstreamProject>
+	</downstreamProject>
+	<scm>
+		<browser></browser>
+		<type>hudson.scm.SubversionSCM</type>
+		<browser></browser>
+		<doRevert>false</doRevert>
+		<excludedCommitMessages></excludedCommitMessages>
+		<excludedRegions></excludedRegions>
+		<excludedRevprop></excludedRevprop>
+		<excludedUsers></excludedUsers>
+		<includedRegions></includedRegions>
+		<location></location>
+		<location></location>
+		<useUpdate>true</useUpdate>
+	</scm>
+	<upstreamProject>
+		<action>
+			<parameterDefinition>
+				<defaultParameterValue>
+					<value>clean install -B -U -fae -e
+						-Dmaven.repo.local=${WORKSPACE}/m2-repository -P
+						helios-local-target,jbosstools-nightly-trunk,hudson</value>
+				</defaultParameterValue>
+				<description>Pass in lifecycle phase and extra flags to Maven, such
+					as:
+
+					&lt;pre&gt;
+					clean :: clean before building *
+					integration-test :: build and test *
+					install :: build, test, and install into m2 repo *
+					osgi-test:test :: just (re-)run test(s)
+
+					-P helios-no-target :: don't use .target file to provision target;
+					instead generate on the fly from MANIFEST.MF and feature.xml files
+					-P galileo :: enable galileo dependencies
+					-P hudson :: enable hudson build ID in feature/plugin qualifiers
+					-P !helios :: disable helios target (not available)
+
+					-Dmaven.test.skip :: skip compiling and running tests
+					-Dmaven.test.skip.exec :: to compile but not run tests in conjunction with
+					integration-test or install phase
+
+					-Dmaven.repo.local=${WORKSPACE}/m2-repository :: path to local m2
+					repo
+
+					-fae :: fail at end
+					-fn :: fail never
+
+					-o :: offline
+					-B :: batch (non-interactive) mode
+					-U :: check for updates
+					-e :: if error occurs, dump stack into console
+
+					-q :: quieter output&lt;/pre&gt; </description>
+				<name>MAVEN_FLAGS</name>
+				<type>StringParameterDefinition</type>
+			</parameterDefinition>
+		</action>
+		<action></action>
+		<action></action>
+		<action></action>
+		<action></action>
+		<action></action>
+		<action></action>
+		<description>Nightly build using Tycho, monitoring SVN every 6 hrs for
+			changes.
+
+			&lt;h2&gt;&lt;a style="color:green"
+			href="http://download.jboss.org/jbosstools/builds/cascade/"&gt;Build
+			Job Cascade &amp;amp; Results&lt;/a&gt;&lt;/h2&gt; </description>
+		<displayName>jbosstools-3.2_stable_branch.component--tests
+		</displayName>
+		<name>jbosstools-3.2_stable_branch.component--tests</name>
+		<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--tests/
+		</url>
+		<buildable>true</buildable>
+		<build>
+			<number>14</number>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--tests/14/
+			</url>
+		</build>
+		<color>blue</color>
+		<firstBuild>
+			<number>14</number>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--tests/14/
+			</url>
+		</firstBuild>
+		<healthReport>
+			<description>Build stability: No recent builds failed.</description>
+			<iconUrl>health-80plus.gif</iconUrl>
+			<score>100</score>
+		</healthReport>
+		<inQueue>false</inQueue>
+		<keepDependencies>false</keepDependencies>
+		<lastBuild>
+			<number>14</number>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--tests/14/
+			</url>
+		</lastBuild>
+		<lastCompletedBuild>
+			<number>14</number>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--tests/14/
+			</url>
+		</lastCompletedBuild>
+		<lastStableBuild>
+			<number>14</number>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--tests/14/
+			</url>
+		</lastStableBuild>
+		<lastSuccessfulBuild>
+			<number>14</number>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--tests/14/
+			</url>
+		</lastSuccessfulBuild>
+		<nextBuildNumber>15</nextBuildNumber>
+		<property>
+			<parameterDefinition>
+				<defaultParameterValue>
+					<name>MAVEN_FLAGS</name>
+					<value>clean install -B -U -fae -e
+						-Dmaven.repo.local=${WORKSPACE}/m2-repository -P
+						helios-local-target,jbosstools-nightly-trunk,hudson</value>
+				</defaultParameterValue>
+				<description>Pass in lifecycle phase and extra flags to Maven, such
+					as:
+
+					&lt;pre&gt;
+					clean :: clean before building *
+					integration-test :: build and test *
+					install :: build, test, and install into m2 repo *
+					osgi-test:test :: just (re-)run test(s)
+
+					-P helios-no-target :: don't use .target file to provision target;
+					instead generate on the fly from MANIFEST.MF and feature.xml files
+					-P galileo :: enable galileo dependencies
+					-P hudson :: enable hudson build ID in feature/plugin qualifiers
+					-P !helios :: disable helios target (not available)
+
+					-Dmaven.test.skip :: skip compiling and running tests
+					-Dmaven.test.skip.exec :: to compile but not run tests in conjunction with
+					integration-test or install phase
+
+					-Dmaven.repo.local=${WORKSPACE}/m2-repository :: path to local m2
+					repo
+
+					-fae :: fail at end
+					-fn :: fail never
+
+					-o :: offline
+					-B :: batch (non-interactive) mode
+					-U :: check for updates
+					-e :: if error occurs, dump stack into console
+
+					-q :: quieter output&lt;/pre&gt; </description>
+				<name>MAVEN_FLAGS</name>
+				<type>StringParameterDefinition</type>
+			</parameterDefinition>
+		</property>
+		<property></property>
+		<property></property>
+		<property></property>
+		<concurrentBuild>false</concurrentBuild>
+		<downstreamProject>
+			<name>jbosstools-3.2_stable_branch.component--archives</name>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--archives/
+			</url>
+			<color>blue</color>
+		</downstreamProject>
+		<downstreamProject>
+			<name>jbosstools-3.2_stable_branch.component--birt</name>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--birt/
+			</url>
+			<color>blue</color>
+		</downstreamProject>
+		<downstreamProject>
+			<name>jbosstools-3.2_stable_branch.component--bpel</name>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--bpel/
+			</url>
+			<color>blue</color>
+		</downstreamProject>
+		<downstreamProject>
+			<name>jbosstools-3.2_stable_branch.component--common</name>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--common/
+			</url>
+			<color>blue</color>
+		</downstreamProject>
+		<downstreamProject>
+			<name>jbosstools-3.2_stable_branch.component--examples</name>
+			<url>http://hudson.qa.jboss.com/hudson/view/DevStudio_Stable_Branch/job/jbosstools-3.2_stable_branch.component--examples/
+			</url>
+			<color>blue</color>
+		</downstreamProject>
+		<downstreamProject>
+			<name>jbosstools-3.2_stable_branch.component--flow</name>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--flow/
+			</url>
+			<color>blue</color>
+		</downstreamProject>
+		<downstreamProject>
+			<name>jbosstools-3.2_stable_branch.component--freemarker</name>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--freemarker/
+			</url>
+			<color>blue</color>
+		</downstreamProject>
+		<downstreamProject>
+			<name>jbosstools-3.2_stable_branch.component--jmx</name>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--jmx/
+			</url>
+			<color>blue</color>
+		</downstreamProject>
+		<downstreamProject>
+			<name>jbosstools-3.2_stable_branch.component--modeshape</name>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--modeshape/
+			</url>
+			<color>blue</color>
+		</downstreamProject>
+		<downstreamProject>
+			<name>jbosstools-3.2_stable_branch.component--portlet</name>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--portlet/
+			</url>
+			<color>blue</color>
+		</downstreamProject>
+		<downstreamProject>
+			<name>jbosstools-3.2_stable_branch.component--profiler</name>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--profiler/
+			</url>
+			<color>blue</color>
+		</downstreamProject>
+		<downstreamProject>
+			<name>jbosstools-3.2_stable_branch.component--smooks</name>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--smooks/
+			</url>
+			<color>blue</color>
+		</downstreamProject>
+		<downstreamProject>
+			<name>jbosstools-3.2_stable_branch.component--tptp</name>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--tptp/
+			</url>
+			<color>blue</color>
+		</downstreamProject>
+		<scm></scm>
+		<upstreamProject>
+			<name>jbosstools-3.2_stable_branch.target-platform</name>
+			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.target-platform/
+			</url>
+			<color>blue</color>
+		</upstreamProject>
+	</upstreamProject>
+</freeStyleProject>
