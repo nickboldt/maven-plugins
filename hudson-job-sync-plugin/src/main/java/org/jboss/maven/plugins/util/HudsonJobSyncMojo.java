@@ -97,9 +97,9 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 	}
 
 	/**
-	 * @parameter expression="${viewFilter}" default-value=""
+	 * @parameter expression="${viewFilter}" default-value="view/myViewName/"
 	 */
-	public String viewFilter = "";
+	private String viewFilter = "view/myViewName/";
 
 	// "view/DevStudio_Trunk/";
 	// "view/DevStudio_Stable_Branch/";
@@ -115,7 +115,7 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 	/**
 	 * @parameter expression="${regexFilter}" default-value=".*"
 	 */
-	public String regexFilter = ".*";
+	private String regexFilter = ".*";
 
 	// "jbosstools-.+_trunk.*|devstudio-.+_trunk.*";
 	// "jbosstools-.+_stable_branch.*|devstudio-.+_stable_branch.*";
@@ -130,7 +130,7 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 	/**
 	 * @parameter expression="${operation}" default-value="pull"
 	 */
-	public String operation = "pull";
+	private String operation = "pull";
 
 	public String getOperation() {
 		return operation;
@@ -144,7 +144,7 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 	 * @parameter expression="${overwriteExistingConfigXMLFile}"
 	 *            default-value="false"
 	 */
-	public boolean overwriteExistingConfigXMLFile = false;
+	private boolean overwriteExistingConfigXMLFile = false;
 
 	public boolean getOverwriteExistingConfigXMLFile() {
 		return overwriteExistingConfigXMLFile;
@@ -155,11 +155,24 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 		this.overwriteExistingConfigXMLFile = overwriteExistingConfigXMLFile;
 	}
 
+	/**
+	 * @parameter expression="${storeSnapshotOnPush}" default-value="false"
+	 */
+	private boolean storeSnapshotOnPush = false;
+
+	public boolean getStoreSnapshotOnPush() {
+		return storeSnapshotOnPush;
+	}
+
+	public void setStoreSnapshotOnPush(boolean storeSnapshotOnPush) {
+		this.storeSnapshotOnPush = storeSnapshotOnPush;
+	}
+
 	public String[] getJobNames() throws Exception {
 		Log log = getLog();
 		HttpClient client = getHttpClient(username, password);
 		String URLSuffix = viewFilter;
-		
+
 		// URLSuffix is usually either "" or something like
 		// "view/DevStudio_Trunk/" (with trailing slash)
 		// note: URLSuffix is ignored when accessing a localhost Hudson
@@ -177,7 +190,8 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 		for (Element job : (List<Element>) dom.getRootElement().elements("job")) {
 			if (!job.elementText("name").toString().replaceAll(regexFilter, "")
 					.equals(job.elementText("name").toString())) {
-				//if (verbose) { getLog().info("Matched: " + job.elementText("name").toString());	}
+				// if (verbose) { getLog().info("Matched: " +
+				// job.elementText("name").toString()); }
 				jobNames.add(job.elementText("name").toString());
 			}
 		}
@@ -185,107 +199,139 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 	}
 
 	public void execute() throws MojoExecutionException {
-		Log log = getLog();
-
-		// run against a local or remote URL
-		setHudsonURL(hudsonURL);
 		if (verbose) {
 			getLog().info("Hudson URL: " + hudsonURL);
-			try {
-				getLog().info("====================");
-				getLog().info(
-						listJobsOnServer(hudsonURL + viewFilter + "api/xml"));
-				getLog().info("====================");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			getLog().info("Operation:  " + operation);
 		}
 
-		if (verbose) {
-			getLog().info("Operation: " + operation);
-		}
-
-		// for testing use this instead of pulling list from Hudson using view/regex filter. 
-		//String[] jobNames = { "jbosstools-3.3_trunk.component--TEMPLATE" };
+		// for testing, can use static array declaration instead of pulling list
+		// from Hudson via viewFilter and regexFilter
+		// String[] jobNames = { "jbosstools-3.3_trunk.component--TEMPLATE" };
 		String[] jobNames = null;
 		try {
 			jobNames = getJobNames();
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
-		
+
+		boolean doOverwriteWarning = false;
 		if (jobNames != null) {
 			for (int i = 0; i < jobNames.length; i++) {
 				String jobName = jobNames[i];
+				getLog().info("");
+				getLog().info("== " + jobName + " ==");
 				File configXMLFile = null;
 				if (operation.equals("pull")) {
-					configXMLFile = getConfigXMLFile(jobName, true); // cache/servername/view/viewname/job/jobName/config.$timestamp.xml
-					if (verbose) {
-						try {
-							log.info("Snapshot config.xml pulled for "
-									+ jobName + ": " + configXMLFile.toString());
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-					if (overwriteExistingConfigXMLFile) {
-						updateLatestConfigXMLFile(configXMLFile); // cache/servername/view/viewname/job/jobName/config.xml
-						if (verbose) {
-							try {
-								log.info("Current config.xml updated for "
-										+ jobName
-										+ ": "
-										+ configXMLFile.toString().replaceAll(
-												"config.+xml", "config.xml"));
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-						}
-					} else {
-						log.warn("Current config.xml exists. To overwrite from server copy, use");
-						log.warn("  `mvn clean install -DoverwriteExistingConfigXMLFile=true`, or ");
-						log.warn("  <overwriteExistingConfigXMLFile>true</overwriteExistingConfigXMLFile> in pom");
-					}
+					doOverwriteWarning = pull(jobName, doOverwriteWarning);
 				} else if (operation.equals("push")) {
-					configXMLFile = new File(createJobFolder(jobName),
-							"config.xml");
-					updateJob(configXMLFile, jobName, true);
-					if (verbose) {
-						try {
-							log.info("Local config.xml pushed for " + jobName
-									+ ": " + configXMLFile.toString());
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
+					push(jobName);
 				}
+			}
+
+			if (doOverwriteWarning && verbose) {
+				getLog().info("");
+				getLog().info(
+						"To overwrite local config.xml file(s) with server copy, use");
+				getLog().info(
+						"  `mvn clean install -DoverwriteExistingConfigXMLFile=true`, or ");
+				getLog().info(
+						"  <overwriteExistingConfigXMLFile>true</overwriteExistingConfigXMLFile> in pom");
+				getLog().info("");
 			}
 		}
 	}
 
-	private void updateLatestConfigXMLFile(File configXMLFile) {
+	public void push(String jobName) throws MojoExecutionException {
+		File configXMLFile;
+		configXMLFile = new File(getConfigXMLFilename(jobName));
+		postConfigXML(configXMLFile, jobName);
 		try {
-			FileUtils.copyFile(configXMLFile, new File(configXMLFile.toString()
-					.replaceAll("config.+xml", "config.xml")));
-		} catch (IOException e) {
+			if (verbose) {
+				getLog().info(
+						"Local config.xml pushed from: "
+								+ configXMLFile.toString());
+			} else {
+				getLog().info("Local config.xml pushed to job: " + jobName);
+			}
+		} catch (Exception e) {
 			e.printStackTrace();
+		}
+		if (storeSnapshotOnPush) {
+			try {
+				// copy config.xml to config.2011-03-29_17:43:40.794.xml
+				FileUtils.copyFile(configXMLFile,
+						getConfigXMLFile(jobName, true));
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		}
 	}
 
+	public boolean pull(String jobName, boolean doOverwriteWarning) {
+		File configXMLFile;
+		// returns
+		// cache/servername/view/viewname/job/jobName/config.$timestamp.xml
+		// or NULL, if nothing new on server so nothing to create
+		configXMLFile = getConfigXMLFile(jobName, true, true);
+		if (verbose) {
+			try {
+				if (configXMLFile != null) {
+					getLog().info(
+							"Snapshot config.xml generated: "
+									+ configXMLFile.toString());
+				} else {
+					getLog().info(
+							"Snapshot config.xml unchanged: "
+									+ getConfigXMLFilename(jobName));
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		if (configXMLFile != null) {
+			if (overwriteExistingConfigXMLFile) {
+				try {
+					// copy config.2011-03-29_17:43:40.794.xml to config.xml
+					FileUtils.copyFile(configXMLFile, new File(
+							getConfigXMLFilename(jobName)));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+				if (verbose) {
+					getLog().info(
+							"Latest config.xml    updated: "
+									+ getConfigXMLFilename(jobName));
+				}
+			} else {
+				if (verbose) {
+					getLog().info(
+							"Latest config.xml  exists in: "
+									+ getJobFolder(jobName));
+				}
+				doOverwriteWarning = true;
+			}
+		}
+		return doOverwriteWarning;
+	}
+
+	public String getConfigXMLFilename(String jobName) {
+		return getJobFolder(jobName) + "/config.xml";
+	}
+
 	// cache/$servername/view/$viewname/job/$jobName/
-	private File createJobFolder(String jobName) {
+	private File getJobFolder(String jobName) {
 		String jobFolderPath = "cache/" + hudsonURL.replaceAll("://", "/")
 				+ "/" + viewFilter + "/job/" + jobName + "/";
-		File jobFolder = null;
 		new File(jobFolderPath).mkdirs();
-		jobFolder = new File(jobFolderPath);
-		return jobFolder;
+		return new File(jobFolderPath);
 	}
 
 	// fetch config.xml from server, and store in
 	// cache/$servername/view/$viewname/job/jobName/config.$timestamp.xml
 	// see also createJobFolder(jobName)
-	public File getConfigXMLFile(String jobName, boolean includeTimestamp) {
+	public File getConfigXMLFile(String jobName, boolean includeTimestamp,
+			boolean writeOnlyIfNew) {
 		File configXMLFile = null;
 		Document configXML = null;
 		try {
@@ -295,20 +341,58 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 		}
 
 		if (configXML != null) {
-			// write to temp file
+			// define file to write
 			if (configXMLFile == null) {
-				configXMLFile = new File(createJobFolder(jobName), "config"
-						+ (includeTimestamp ? "." + createTimestamp() : "")
-						+ ".xml");
+				configXMLFile = getConfigXMLFile(jobName, includeTimestamp);
 			}
 			try {
-				writeDomToFile(configXML, configXMLFile);
+				// write to file
+				if (writeOnlyIfNew) {
+					String latestConfigXMLFilename = getConfigXMLFilename(jobName);
+					File latestConfigXMLFile = new File(latestConfigXMLFilename);
+					// if config.xml doesn't exist, create a new snapshot file
+					if (latestConfigXMLFile == null
+							|| !latestConfigXMLFile.exists()) {
+						writeDomToFile(configXML, configXMLFile);
+						return configXMLFile;
+					} else {
+						// check XML to see if it's different
+						Document latestConfigXML = null;
+						try {
+							latestConfigXML = new SAXReader()
+									.read(latestConfigXMLFile);
+						} catch (DocumentException e) {
+							e.printStackTrace();
+						}
+						if (latestConfigXML == null
+								|| !configXML.asXML().equals(
+										latestConfigXML.asXML())) {
+							writeDomToFile(configXML, configXMLFile);
+							return configXMLFile;
+						} else {
+							// XML not different.
+							// if (verbose) {
+							// getLog().info(
+							// "Server copy and local copy are equal: "
+							// + latestConfigXMLFilename);
+							// }
+						}
+					}
+				} else {
+					writeDomToFile(configXML, configXMLFile);
+					return configXMLFile;
+				}
 			} catch (MojoExecutionException e) {
 				e.printStackTrace();
 			}
 
 		}
-		return configXMLFile;
+		return null;
+	}
+
+	public File getConfigXMLFile(String jobName, boolean includeTimestamp) {
+		return new File(getJobFolder(jobName), "config"
+				+ (includeTimestamp ? "." + createTimestamp() : "") + ".xml");
 	}
 
 	private String createTimestamp() {
@@ -438,7 +522,6 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 
 	private String[] postXML(File xmlFile, String xmlContents, String jobURL,
 			boolean getErrorMessage) {
-		Log log = getLog();
 		int resultCode = -1;
 		String responseBody = "";
 		PostMethod post = new PostMethod(jobURL);
@@ -490,9 +573,9 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 				// resultString = getErrorMessage(post, jobURL);
 			}
 			// if (verbose) {
-			// log.info("Response status code: " + resultCode);
-			// log.info("Response body: ");
-			// log.info(resultString);
+			// getLog().info("Response status code: " + resultCode);
+			// getLog().info("Response body: ");
+			// getLog().info(resultString);
 			// }
 		} catch (HttpException e) {
 			e.printStackTrace();
@@ -513,7 +596,13 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 		}
 	}
 
-	// dom.selectSingleNode("/project/scm/locations/hudson.scm.SubversionSCM_-ModuleLocation[1]/remote")
+	// try {
+	// getLog().info(
+	// listJobsOnServer(hudsonURL + viewFilter + "api/xml"));
+	// getLog().info("====================");
+	// } catch (Exception e) {
+	// e.printStackTrace();
+	// }
 	public String listJobsOnServer(String url) throws Exception {
 		HttpClient client = getHttpClient(username, password);
 
