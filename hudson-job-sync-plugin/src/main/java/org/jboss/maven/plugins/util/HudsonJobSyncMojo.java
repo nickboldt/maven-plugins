@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.Header;
@@ -219,7 +220,7 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 			for (int i = 0; i < jobNames.length; i++) {
 				String jobName = jobNames[i];
 				getLog().info("");
-				getLog().info("== " + jobName + " ==");
+				getLog().info("== [" + i + "] " + jobName + " ==");
 				File configXMLFile = null;
 				if (operation.equals("pull")) {
 					doOverwriteWarning = pull(jobName, doOverwriteWarning);
@@ -300,13 +301,13 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 
 				if (verbose) {
 					getLog().info(
-							"Latest config.xml    updated: "
+							"Latest  config.xml    updated: "
 									+ getConfigXMLFilename(jobName));
 				}
 			} else {
 				if (verbose) {
 					getLog().info(
-							"Latest config.xml  exists in: "
+							"Latest   config.xml exists in: "
 									+ getJobFolder(jobName));
 				}
 				doOverwriteWarning = true;
@@ -356,26 +357,30 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 						writeDomToFile(configXML, configXMLFile);
 						return configXMLFile;
 					} else {
+						// serialize to file (to ensure consistent line
+						// endings?) then compare old & new; if same, delete new
+						writeDomToFile(configXML, configXMLFile);
 						// check XML to see if it's different
 						Document latestConfigXML = null;
 						try {
 							latestConfigXML = new SAXReader()
 									.read(latestConfigXMLFile);
+							configXML = new SAXReader().read(configXMLFile);
 						} catch (DocumentException e) {
 							e.printStackTrace();
 						}
-						if (latestConfigXML == null
-								|| !configXML.asXML().equals(
+						if (latestConfigXML != null
+								&& configXML.asXML().length() == latestConfigXML
+										.asXML().length()
+								&& configXML.asXML().equals(
 										latestConfigXML.asXML())) {
+							// XML not different.
+							// if (verbose) { getLog().info( "Server copy and local copy are equal for: " + jobName); }
+							FileUtils.fileDelete(configXMLFile.toString());
+							return null;
+						} else {
 							writeDomToFile(configXML, configXMLFile);
 							return configXMLFile;
-						} else {
-							// XML not different.
-							// if (verbose) {
-							// getLog().info(
-							// "Server copy and local copy are equal: "
-							// + latestConfigXMLFilename);
-							// }
 						}
 					}
 				} else {
@@ -385,7 +390,6 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 			} catch (MojoExecutionException e) {
 				e.printStackTrace();
 			}
-
 		}
 		return null;
 	}
