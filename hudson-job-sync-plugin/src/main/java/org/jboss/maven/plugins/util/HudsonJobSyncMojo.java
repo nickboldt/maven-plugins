@@ -483,7 +483,6 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 	}
 
 	private String getErrorMessage(PostMethod post, String jobName) {
-		Log log = getLog();
 		// scan through the job list and retrieve error message
 		Document dom;
 		String error = null;
@@ -505,7 +504,7 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 				}
 			}
 		} catch (DocumentException e) {
-			log.error("Error reading from " + jobName);
+			getLog().error("Error reading from " + jobName);
 			// e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -546,7 +545,7 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 				post.setRequestEntity(new InputStreamRequestEntity(
 						new FileInputStream(xmlFile), xmlFile.length()));
 			} catch (FileNotFoundException e) {
-				log.error("File not found: " + xmlFile);
+				getLog().error("File not found: " + xmlFile);
 				e.printStackTrace();
 			}
 
