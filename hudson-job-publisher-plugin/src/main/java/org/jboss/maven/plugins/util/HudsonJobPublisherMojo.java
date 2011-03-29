@@ -493,7 +493,7 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 	// jobProperties name/value pairs
 	public void loadComponentsIntoJobList() {
 		if (components != null && !components.isEmpty()) {
-			String[] componentArray = components.split("[, ]+");
+			String[] componentArray = components.split("[,\t\n ]+");
 			// getLog().debug(componentArray.length + " : " +
 			// componentArray);
 			for (int i = 0; i < componentArray.length; i++) {
@@ -744,7 +744,7 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 				post.setRequestEntity(new InputStreamRequestEntity(
 						new FileInputStream(xmlFile), xmlFile.length()));
 			} catch (FileNotFoundException e) {
-				log.equals("File not found: " + xmlFile);
+				log.error("File not found: " + xmlFile);
 				e.printStackTrace();
 			}
 
