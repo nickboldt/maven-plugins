@@ -155,6 +155,35 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 		this.overwriteExistingConfigXMLFile = overwriteExistingConfigXMLFile;
 	}
 
+	public String[] getJobNames() throws Exception {
+		Log log = getLog();
+		HttpClient client = getHttpClient(username, password);
+		String URLSuffix = viewFilter;
+		
+		// URLSuffix is usually either "" or something like
+		// "view/DevStudio_Trunk/" (with trailing slash)
+		// note: URLSuffix is ignored when accessing a localhost Hudson
+		// instance, as it's assumed we're testing + view may not exist
+		HttpMethod method = new GetMethod(hudsonURL
+				+ (hudsonURL.indexOf("localhost") >= 0 ? "" : URLSuffix)
+				+ "api/xml");
+		client.executeMethod(method);
+		checkResult(method.getStatusCode(), method.getURI());
+
+		ArrayList<String> jobNames = new ArrayList<String>();
+
+		Document dom = new SAXReader().read(method.getResponseBodyAsStream());
+		// scan through the job list and print its status
+		for (Element job : (List<Element>) dom.getRootElement().elements("job")) {
+			if (!job.elementText("name").toString().replaceAll(regexFilter, "")
+					.equals(job.elementText("name").toString())) {
+				//if (verbose) { getLog().info("Matched: " + job.elementText("name").toString());	}
+				jobNames.add(job.elementText("name").toString());
+			}
+		}
+		return jobNames.toArray(new String[jobNames.size()]);
+	}
+
 	public void execute() throws MojoExecutionException {
 		Log log = getLog();
 
@@ -162,59 +191,72 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 		setHudsonURL(hudsonURL);
 		if (verbose) {
 			getLog().info("Hudson URL: " + hudsonURL);
-			/*
-			 * try { getLog().info("===================="); getLog().info(
-			 * listJobsOnServer(hudsonURL + viewFilter + "api/xml"));
-			 * getLog().info("===================="); } catch (Exception e) {
-			 * e.printStackTrace(); }
-			 */
+			try {
+				getLog().info("====================");
+				getLog().info(
+						listJobsOnServer(hudsonURL + viewFilter + "api/xml"));
+				getLog().info("====================");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 
 		if (verbose) {
 			getLog().info("Operation: " + operation);
 		}
-		String[] jobNames = { "jbosstools-3.3_trunk.component--TEMPLATE" };
 
-		for (int i = 0; i < jobNames.length; i++) {
-			String jobName = jobNames[i];
-			File configXMLFile = null;
-			if (operation.equals("pull")) {
-				configXMLFile = getConfigXMLFile(jobName, true); // cache/servername/view/viewname/job/jobName/config.$timestamp.xml
-				if (verbose) {
-					try {
-						log.info("Snapshot config.xml pulled for " + jobName
-								+ ": " + configXMLFile.toString());
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-				if (overwriteExistingConfigXMLFile) {
-					updateLatestConfigXMLFile(configXMLFile); // cache/servername/view/viewname/job/jobName/config.xml
+		// for testing use this instead of pulling list from Hudson using view/regex filter. 
+		//String[] jobNames = { "jbosstools-3.3_trunk.component--TEMPLATE" };
+		String[] jobNames = null;
+		try {
+			jobNames = getJobNames();
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		
+		if (jobNames != null) {
+			for (int i = 0; i < jobNames.length; i++) {
+				String jobName = jobNames[i];
+				File configXMLFile = null;
+				if (operation.equals("pull")) {
+					configXMLFile = getConfigXMLFile(jobName, true); // cache/servername/view/viewname/job/jobName/config.$timestamp.xml
 					if (verbose) {
 						try {
-							log.info("Current config.xml updated for "
-									+ jobName
-									+ ": "
-									+ configXMLFile.toString().replaceAll(
-											"config.+xml", "config.xml"));
+							log.info("Snapshot config.xml pulled for "
+									+ jobName + ": " + configXMLFile.toString());
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
 					}
-				} else {
-					log.warn("Current config.xml exists. To overwrite from server copy, use");
-					log.warn("  `mvn clean install -DoverwriteExistingConfigXMLFile=true`, or ");
-					log.warn("  <overwriteExistingConfigXMLFile>true</overwriteExistingConfigXMLFile> in pom");
-				}
-			} else if (operation.equals("push")) {
-				configXMLFile = new File(createJobFolder(jobName), "config.xml");
-				updateJob(configXMLFile, jobName, true);
-				if (verbose) {
-					try {
-						log.info("Local config.xml pushed for " + jobName
-								+ ": " + configXMLFile.toString());
-					} catch (Exception e) {
-						e.printStackTrace();
+					if (overwriteExistingConfigXMLFile) {
+						updateLatestConfigXMLFile(configXMLFile); // cache/servername/view/viewname/job/jobName/config.xml
+						if (verbose) {
+							try {
+								log.info("Current config.xml updated for "
+										+ jobName
+										+ ": "
+										+ configXMLFile.toString().replaceAll(
+												"config.+xml", "config.xml"));
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					} else {
+						log.warn("Current config.xml exists. To overwrite from server copy, use");
+						log.warn("  `mvn clean install -DoverwriteExistingConfigXMLFile=true`, or ");
+						log.warn("  <overwriteExistingConfigXMLFile>true</overwriteExistingConfigXMLFile> in pom");
+					}
+				} else if (operation.equals("push")) {
+					configXMLFile = new File(createJobFolder(jobName),
+							"config.xml");
+					updateJob(configXMLFile, jobName, true);
+					if (verbose) {
+						try {
+							log.info("Local config.xml pushed for " + jobName
+									+ ": " + configXMLFile.toString());
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 					}
 				}
 			}
@@ -469,32 +511,6 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 		} else {
 			return new String[] { resultCode + "", "" };
 		}
-	}
-
-	public String[] getJobNames() throws Exception {
-		return getJobNames("");
-	}
-
-	// note: URLSuffix is ignored when accessing a localhost Hudson instance, as
-	// we assume we're just testing and the view may not exist
-	public String[] getJobNames(String URLSuffix) throws Exception {
-		Log log = getLog();
-		HttpClient client = getHttpClient(username, password);
-
-		HttpMethod method = new GetMethod(hudsonURL
-				+ (hudsonURL.indexOf("localhost") >= 0 ? "" : URLSuffix)
-				+ "api/xml");
-		client.executeMethod(method);
-		checkResult(method.getStatusCode(), method.getURI());
-
-		ArrayList<String> jobNames = new ArrayList<String>();
-
-		Document dom = new SAXReader().read(method.getResponseBodyAsStream());
-		// scan through the job list and print its status
-		for (Element job : (List<Element>) dom.getRootElement().elements("job")) {
-			jobNames.add(job.elementText("name").toString());
-		}
-		return jobNames.toArray(new String[jobNames.size()]);
 	}
 
 	// dom.selectSingleNode("/project/scm/locations/hudson.scm.SubversionSCM_-ModuleLocation[1]/remote")
