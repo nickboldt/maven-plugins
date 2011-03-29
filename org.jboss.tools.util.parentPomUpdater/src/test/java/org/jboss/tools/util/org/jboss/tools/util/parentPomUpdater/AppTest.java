@@ -37,9 +37,10 @@ public class AppTest {
 
 	@Test
 	public void testExecute() throws IOException, DocumentException {
-		App.main(new String[] { "/home/nboldt/truu/product",
-				"org.jboss.tools:org.jboss.tools.parent.pom:0.0.1-SNAPSHOT",
-				"org.jboss.tools:org.jboss.tools.parent.pom:0.0.2-SNAPSHOT" });
+//		App.main(new String[] { "/home/nboldt/33xx/product",
+		App.main(new String[] { "/home/nboldt/33x",
+				"org.jboss.tools:org.jboss.tools.parent.pom:0.0.2-SNAPSHOT",
+				"org.jboss.tools:org.jboss.tools.parent.pom:0.0.3-SNAPSHOT" });
 		Assert.assertTrue(true);
 	}
 
