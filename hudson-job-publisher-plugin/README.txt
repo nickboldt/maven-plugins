@@ -56,7 +56,7 @@ To run, make sure that JAVA_HOME is set to the path where you imported the cert,
 					<jobTemplateFile>config.xml</jobTemplateFile>
 
 					<!-- job configuration: one buildURL -->
-					<buildURL>https://svn.jboss.org/repos/jbosstools/trunk/build</buildURL>
+					<buildURL>http://anonsvn.jboss.org/repos/jbosstools/trunk/build</buildURL>
 					<branchOrTag>branches/jbosstools-3.3.0.M2</branchOrTag>
 					<!-- then many identically configured components -->
 					<componentJobNamePrefix>jbosstools-3.3_trunk.component--</componentJobNamePrefix>
