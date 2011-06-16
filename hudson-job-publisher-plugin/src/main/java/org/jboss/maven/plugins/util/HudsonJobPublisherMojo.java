@@ -254,6 +254,8 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 
 		String xmlFile = jobTemplateFile; // "target/config.xml";
 
+		jobProperties = getJobProperties();
+		
 		// merge components and properties into a single Properties list
 		loadComponentsIntoJobList();
 		// work on those Properties - create or update jobs as needed
@@ -287,12 +289,12 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			Enumeration jobNamesEnum = jobProperties.propertyNames();
+			/*Enumeration jobNamesEnum = jobProperties.propertyNames();
 			while (jobNamesEnum.hasMoreElements()) {
 				String jobName = (String) jobNamesEnum.nextElement();
 				String sourcesURL = jobProperties.getProperty(jobName);
-				// getLog().debug(jobName + " == " + sourcesURL);
-			}
+				getLog().info(jobName + " == " + sourcesURL);
+			}*/
 			if (jobNames != null & jobNames.length > 0) {
 				for (int i = 0; i < jobNames.length; i++) {
 					String fromJobName = jobNames[i];
@@ -422,10 +424,12 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 						"<a style=\"color:#FF9933\" href=\"http://download.jboss.org/jbosstools/builds/cascade/trunk.html\">") >= 0) {
 			// replace with stable colour and link
 			configXML.selectSingleNode("/project/description").setText(
-					configXML.selectSingleNode("/project/description")
+					configXML
+							.selectSingleNode("/project/description")
 							.getText()
-							.replaceAll("color:#FF9933", "color:green")
-							.replaceAll("cascade/trunk.html", "cascade/"));
+							.replaceAll("color:#FF9933", "color:blue")
+							.replaceAll("cascade/trunk.html",
+									"cascade/3.3.indigo.html"));
 		}
 		return configXML;
 	}
@@ -440,32 +444,26 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 		// .selectSingleNode(
 		// "/project/scm/locations/hudson.scm.SubversionSCM_-ModuleLocation[1]/remote")
 		// .getText());
-		configXML
-				.selectSingleNode(
-						"/project/scm/locations/hudson.scm.SubversionSCM_-ModuleLocation[1]/remote")
-				.setText(
+		// replace 1 to 3 URLs if found
+		for (int i = 1; i < 4; i++) {
+			if (null != configXML
+					.selectSingleNode("/project/scm/locations/hudson.scm.SubversionSCM_-ModuleLocation["
+							+ i + "]")
+					&& !configXML.selectSingleNode(
+							"/project/scm/locations/hudson.scm.SubversionSCM_-ModuleLocation["
+									+ i + "]").equals("")) {
+				configXML.selectSingleNode(
+						"/project/scm/locations/hudson.scm.SubversionSCM_-ModuleLocation["
+								+ i + "]/remote").setText(
 						configXML
 								.selectSingleNode(
-										"/project/scm/locations/hudson.scm.SubversionSCM_-ModuleLocation[1]/remote")
-								.getText()
-								.replaceAll("/trunk/",
-										"/" + getBranchOrTag() + "/")); // sourcesURL
-		// getLog().info(
-		// "/project/scm/locations/hudson.scm.SubversionSCM_-ModuleLocation[2]/remote: "
-		// + configXML
-		// .selectSingleNode(
-		// "/project/scm/locations/hudson.scm.SubversionSCM_-ModuleLocation[2]/remote")
-		// .getText());
-		configXML
-				.selectSingleNode(
-						"/project/scm/locations/hudson.scm.SubversionSCM_-ModuleLocation[2]/remote")
-				.setText(
-						configXML
-								.selectSingleNode(
-										"/project/scm/locations/hudson.scm.SubversionSCM_-ModuleLocation[2]/remote")
+										"/project/scm/locations/hudson.scm.SubversionSCM_-ModuleLocation["
+												+ i + "]/remote")
 								.getText()
 								.replaceAll("/trunk/",
 										"/" + getBranchOrTag() + "/")); // buildURL
+			}
+		}
 		return configXML;
 	}
 
@@ -534,7 +532,7 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 							JOB_ALREADY_EXISTS
 									+ "'"
 									+ jobName
-									+ "'. Set replaceExistingJob = true to overwrite existing jobs.");
+									+ "'. Set replaceExistingJob = true to overwrite existing source job(s).");
 					// throw new MojoExecutionException(error);
 				}
 			}
