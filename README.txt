@@ -6,7 +6,7 @@ Licensed under some mix of EPL, WTFPL, and Creative Commons Attribution-NonComme
 
 ---
 
-Current collection include:
+Current collection includes:
 
 hudson-job-publisher-plugin - publish 1 or more new jobs (can override/replace existing jobs, too) via config.xml template file to Hudson/Jenkins server
 
