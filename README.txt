@@ -2,7 +2,7 @@ Personal sandbox for developing maven plugins. Since most of what I do is releas
 
 No warranty provided or implied. Code's free (as in beer) to do w/ as you'd like. 
 
-Licensed under some mix of EPL, WTFPL, and Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0). nickboldt@gmail.com for more info.
+Licensed under some mix of EPL, WTFPL, and Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0). nickboldt at gmail dot com for more info.
 
 ---
 
