@@ -8,6 +8,8 @@ Licensed under some mix of EPL, WTFPL, and Creative Commons Attribution-NonComme
 
 Current collection includes:
 
+hudson-boolean-property-toggle-plugin - toggle a boolean field in one or more jobs' config.xml. For example, can enable/disable blocking when upstream jobs are running
+
 hudson-job-publisher-plugin - publish 1 or more new jobs (can override/replace existing jobs, too) via config.xml template file to Hudson/Jenkins server
 
 hudson-job-sync-plugin - pull from Jenkins to a local cache of config.xml files, or push those files back to the server. Very handy for batch-editing a collection of jobs using script (eg., using sed to globally replace strings), then making changes to many jobs at once. Works with view names to restrict which jobs will be affected and regular expressions to filter within a given view, so you can pull/push a handful of jobs or update everything. I use this to maintain the >140 jobs needed to build three streams of JBoss Tools and Developer Studio.
