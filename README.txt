@@ -26,11 +26,24 @@ unique-GAV-plugin - Check for non-unique GAVs and apply best practices to G:A:V 
 
 Also, there's some in-progress work which is probably not useful to anyone:
 
-tycho-p2-source-feature-plugin - idea was to generate a source feature using Tycho (Tycho only currently generates source PLUGINS from statically pre-defined source FEATURES).
-
-tycho-p2-mirror-plugin - I believe this is obsoleted by something built into Tycho since I started on it. See http://download.jboss.org/jbosstools/updates/requirements/springide/pom-2.7.2.xml or http://wiki.eclipse.org/Tycho/Additional_Tools
 
 sample-maven-plugin
 
 sample-maven-project-depends-on-plugins
+
+--
+
+These were deleted because there are replacements in Tycho 0.14:
+
+tycho-p2-source-feature-plugin - http://search.maven.org/#search|ga|1|org.eclipse.tycho.extras%3Atycho-source-feature-plugin
+	To use this, see http://wiki.eclipse.org/Minerva#Source
+	Example:
+		http://anonsvn.jboss.org/repos/jbosstools/branches/jbosstools-3.3.x/build/parent/pom.xml
+		http://anonsvn.jboss.org/repos/jbosstools/branches/jbosstools-3.3.x/jmx/features/org.jboss.tools.jmx.feature/pom.xml
+		http://anonsvn.jboss.org/repos/jbosstools/branches/jbosstools-3.3.x/jmx/site/category.xml
+
+tycho-p2-mirror-plugin - 
+	To use this, see http://wiki.eclipse.org/Tycho/Additional_Tools
+	Example:
+		http://anonsvn.jboss.org/repos/jbosstools/branches/jbosstools-3.3.x/download.jboss.org/jbosstools/updates/requirements/m2eclipse/pom-juno-1.1.0.20120320-0058.xml
 
