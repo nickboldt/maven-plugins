@@ -35,14 +35,14 @@ sample-maven-project-depends-on-plugins
 
 These were deleted because there are replacements in Tycho 0.14:
 
-tycho-p2-source-feature-plugin - http://search.maven.org/#search|ga|1|org.eclipse.tycho.extras%3Atycho-source-feature-plugin
+tycho-p2-source-feature-plugin - https://repository.jboss.org/nexus/index.html#nexus-search;quick~tycho-source-feature-plugin
 	To use this, see http://wiki.eclipse.org/Minerva#Source
 	Example:
 		http://anonsvn.jboss.org/repos/jbosstools/branches/jbosstools-3.3.x/build/parent/pom.xml
 		http://anonsvn.jboss.org/repos/jbosstools/branches/jbosstools-3.3.x/jmx/features/org.jboss.tools.jmx.feature/pom.xml
 		http://anonsvn.jboss.org/repos/jbosstools/branches/jbosstools-3.3.x/jmx/site/category.xml
 
-tycho-p2-mirror-plugin - 
+tycho-p2-mirror-plugin - https://repository.jboss.org/nexus/index.html#nexus-search;quick~tycho-p2-extras-plugin
 	To use this, see http://wiki.eclipse.org/Tycho/Additional_Tools
 	Example:
 		http://anonsvn.jboss.org/repos/jbosstools/branches/jbosstools-3.3.x/download.jboss.org/jbosstools/updates/requirements/m2eclipse/pom-juno-1.1.0.20120320-0058.xml
