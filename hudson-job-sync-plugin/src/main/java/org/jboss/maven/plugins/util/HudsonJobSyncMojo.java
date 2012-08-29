@@ -18,12 +18,14 @@ import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
+import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -181,6 +183,7 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 		HttpMethod method = new GetMethod(hudsonURL
 				+ (hudsonURL.indexOf("localhost") >= 0 ? "" : URLSuffix)
 				+ "api/xml");
+		method.setDoAuthentication(true);
 		client.executeMethod(method);
 		checkResult(method.getStatusCode(), method.getURI());
 
@@ -528,6 +531,7 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 		int resultCode = -1;
 		String responseBody = "";
 		PostMethod post = new PostMethod(jobURL);
+		post.setDoAuthentication(true);
 		HttpClient client = null;
 
 		if (xmlFile == null && xmlContents != null) {
@@ -610,6 +614,7 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 		HttpClient client = getHttpClient(username, password);
 
 		HttpMethod method = new GetMethod(url);
+		method.setDoAuthentication(true);
 		client.executeMethod(method);
 		checkResult(method.getStatusCode(), method.getURI());
 
@@ -635,59 +640,15 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 	public HttpClient getHttpClient(String username, String password) {
 		HttpClient client = new HttpClient();
 		// establish a connection within 5 seconds
-		client.getHttpConnectionManager().getParams()
-				.setConnectionTimeout(5000);
+		client.getHttpConnectionManager().getParams().setConnectionTimeout(5000);
 
-		if (hudsonURL.indexOf("localhost") >= 0) {
-			/* simpler authentication method, may not work w/ secured Hudson */
-			Credentials creds = new UsernamePasswordCredentials(username,
-					password);
-			if (creds != null) {
-				client.getState().setCredentials(AuthScope.ANY, creds);
-			}
-		} else {
-			GetMethod login = new GetMethod(hudsonURL + "loginEntry");
-			try {
-				client.executeMethod(login);
-			} catch (HttpException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			try {
-				checkResult(login.getStatusCode(), login.getURI());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-			String location = hudsonURL + "j_security_check";
-			while (true) {
-				PostMethod loginMethod = new PostMethod(location);
-				loginMethod.addParameter("j_username", username);
-				loginMethod.addParameter("j_password", password);
-				loginMethod.addParameter("action", "login");
-				try {
-					client.executeMethod(loginMethod);
-				} catch (HttpException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				if (loginMethod.getStatusCode() / 100 == 3) {
-					// Commons HTTP client refuses to handle redirects for POST
-					// so we have to do it manually.
-					location = loginMethod.getResponseHeader("Location")
-							.getValue();
-					continue;
-				}
-				try {
-					checkResult(loginMethod.getStatusCode(),
-							loginMethod.getURI());
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				break;
-			}
+		Credentials creds = new UsernamePasswordCredentials(username, password);
+		if (creds != null) {
+			client.getState().setCredentials(AuthScope.ANY, creds);
+		}
+		if (!hudsonURL.contains("localhost")) {
+			// cf https://docspace.corp.redhat.com/docs/DOC-104196
+			client.getParams().setAuthenticationPreemptive(true);
 		}
 		return client;
 	}
@@ -710,6 +671,7 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 			client = getHttpClient(username, password);
 		}
 		HttpMethod method = new GetMethod(URL);
+		method.setDoAuthentication(true);
 		// if (verbose) {
 		// getLog().info("Config: " + URL);
 		// }
@@ -737,6 +699,7 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 
 		HttpMethod method = null;
 		method = new GetMethod(url);
+		method.setDoAuthentication(true);
 		method.setFollowRedirects(true);
 		try {
 			client.executeMethod(method);
