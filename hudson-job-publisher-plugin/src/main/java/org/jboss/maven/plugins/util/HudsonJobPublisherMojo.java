@@ -16,12 +16,14 @@ import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
+import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -123,9 +125,9 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 
 	/**
 	 * @parameter expression="${buildURL}"
-	 *            default-value="http://svn.jboss.org/repos/jbosstools/trunk/build"
+	 *            default-value="http://svn.jboss.org/repos/jbosstools/trunk/build/publish"
 	 */
-	private String buildURL = "http://svn.jboss.org/repos/jbosstools/trunk/build";
+	private String buildURL = "http://svn.jboss.org/repos/jbosstools/trunk/build/publish";
 
 	public String getBuildURL() {
 		return buildURL;
@@ -225,7 +227,7 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 	 * @parameter expression="${componentJobNamePrefix}" default-value=""
 	 */
 	// replacement for componentJobNameSuffix when copying jobs
-	private String viewPath = "view/DevStudio_Trunk/"; // "view/DevStudio_Stable_Branch/";
+	private String viewPath = "view/DevStudio/view/DevStudio_Trunk/"; // "view/DevStudio/view/DevStudio_Stable_Branch/";
 
 	public String getViewPath() {
 		return viewPath;
@@ -429,7 +431,7 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 							.getText()
 							.replaceAll("color:#FF9933", "color:blue")
 							.replaceAll("cascade/trunk.html",
-									"cascade/3.3.indigo.html"));
+									"cascade/4.0.juno.html"));
 		}
 		return configXML;
 	}
@@ -498,7 +500,7 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 				// add new jobName to sourcesURL mappings
 				// getLog().debug(componentArray[i] + ", " +
 				// componentJobNameSuffix + ", " +
-				// buildURL.replaceAll("/build/*$", "/"));
+				// buildURL.replaceAll("/build/publish/*$", "/"));
 
 				// if the prefix (jbosstools-3.2_trunk.component--)
 				// contains the suffix (_trunk), don't suffix again
@@ -506,12 +508,12 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 						.indexOf(componentJobNameSuffix) > 0) {
 					jobProperties.put(getJbosstoolsJobnamePrefix()
 							+ componentArray[i],
-							buildURL.replaceAll("/build/*$", "/")
+							buildURL.replaceAll("/build/publish/*$", "/")
 									+ componentArray[i]);
 				} else {
 					jobProperties.put(getJbosstoolsJobnamePrefix()
 							+ componentArray[i] + componentJobNameSuffix,
-							buildURL.replaceAll("/build/*$", "/")
+							buildURL.replaceAll("/build/publish/*$", "/")
 									+ componentArray[i]);
 				}
 			}
@@ -678,7 +680,6 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 	}
 
 	private String getErrorMessage(PostMethod post, String jobName) {
-		Log log = getLog();
 		// scan through the job list and retrieve error message
 		Document dom;
 		String error = null;
@@ -700,7 +701,7 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 				}
 			}
 		} catch (DocumentException e) {
-			log.error("Error reading from " + jobName);
+			getLog().error("Error reading from " + jobName);
 			// e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -717,10 +718,10 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 
 	private String[] postXML(File xmlFile, String xmlContents, String jobURL,
 			boolean getErrorMessage) {
-		Log log = getLog();
 		int resultCode = -1;
 		String responseBody = "";
 		PostMethod post = new PostMethod(jobURL);
+		post.setDoAuthentication(true);
 		HttpClient client = null;
 
 		if (xmlFile == null && xmlContents != null) {
@@ -742,7 +743,7 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 				post.setRequestEntity(new InputStreamRequestEntity(
 						new FileInputStream(xmlFile), xmlFile.length()));
 			} catch (FileNotFoundException e) {
-				log.error("File not found: " + xmlFile);
+				getLog().error("File not found: " + xmlFile);
 				e.printStackTrace();
 			}
 
@@ -769,9 +770,9 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 				// resultString = getErrorMessage(post, jobURL);
 			}
 			// if (verbose) {
-			// log.info("Response status code: " + resultCode);
-			// log.info("Response body: ");
-			// log.info(resultString);
+			// getLog().info("Response status code: " + resultCode);
+			// getLog().info("Response body: ");
+			// getLog().info(resultString);
 			// }
 		} catch (HttpException e) {
 			e.printStackTrace();
@@ -822,6 +823,7 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 		HttpMethod method = new GetMethod(hudsonURL
 				+ (hudsonURL.indexOf("localhost") >= 0 ? "" : URLSuffix)
 				+ "api/xml");
+		method.setDoAuthentication(true);
 		client.executeMethod(method);
 		checkResult(method.getStatusCode(), method.getURI());
 
@@ -840,6 +842,7 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 		HttpClient client = getHttpClient(username, password);
 
 		HttpMethod method = new GetMethod(url);
+		method.setDoAuthentication(true);
 		client.executeMethod(method);
 		checkResult(method.getStatusCode(), method.getURI());
 
@@ -865,59 +868,15 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 	public HttpClient getHttpClient(String username, String password) {
 		HttpClient client = new HttpClient();
 		// establish a connection within 5 seconds
-		client.getHttpConnectionManager().getParams()
-				.setConnectionTimeout(5000);
+		client.getHttpConnectionManager().getParams().setConnectionTimeout(5000);
 
-		if (hudsonURL.indexOf("localhost") >= 0) {
-			/* simpler authentication method, may not work w/ secured Hudson */
-			Credentials creds = new UsernamePasswordCredentials(username,
-					password);
-			if (creds != null) {
-				client.getState().setCredentials(AuthScope.ANY, creds);
-			}
-		} else {
-			GetMethod login = new GetMethod(hudsonURL + "loginEntry");
-			try {
-				client.executeMethod(login);
-			} catch (HttpException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			try {
-				checkResult(login.getStatusCode(), login.getURI());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-			String location = hudsonURL + "j_security_check";
-			while (true) {
-				PostMethod loginMethod = new PostMethod(location);
-				loginMethod.addParameter("j_username", username);
-				loginMethod.addParameter("j_password", password);
-				loginMethod.addParameter("action", "login");
-				try {
-					client.executeMethod(loginMethod);
-				} catch (HttpException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				if (loginMethod.getStatusCode() / 100 == 3) {
-					// Commons HTTP client refuses to handle redirects for POST
-					// so we have to do it manually.
-					location = loginMethod.getResponseHeader("Location")
-							.getValue();
-					continue;
-				}
-				try {
-					checkResult(loginMethod.getStatusCode(),
-							loginMethod.getURI());
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				break;
-			}
+		Credentials creds = new UsernamePasswordCredentials(username, password);
+		if (creds != null) {
+			client.getState().setCredentials(AuthScope.ANY, creds);
+		}
+		if (!hudsonURL.contains("localhost")) {
+			// cf https://docspace.corp.redhat.com/docs/DOC-104196
+			client.getParams().setAuthenticationPreemptive(true);
 		}
 		return client;
 	}
@@ -940,6 +899,7 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 			client = getHttpClient(username, password);
 		}
 		HttpMethod method = new GetMethod(URL);
+		method.setDoAuthentication(true);
 		// if (verbose) {
 		// getLog().info("Config: " + URL);
 		// }
@@ -967,6 +927,7 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 
 		HttpMethod method = null;
 		method = new GetMethod(url);
+		method.setDoAuthentication(true);
 		method.setFollowRedirects(true);
 		try {
 			client.executeMethod(method);

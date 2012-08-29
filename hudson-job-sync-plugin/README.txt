@@ -24,7 +24,7 @@ To be able to connect to server, must first import certificate or you may get th
 
 AS USER (with Firefox):
 
-Browse to https://hudson.qa.jboss.com/hudson & accept the cert.
+Browse to https://jenkins.mw.lab.eng.bos.redhat.com/hudson/ & accept the cert. Log in using kerberos login.
 
 	Edit > Preferences > Advanced > Encryption > View Certificates > find hudson cert > Export to file /tmp/hudson.qa.jboss.com.cert
 
@@ -41,11 +41,11 @@ To run, make sure that JAVA_HOME is set to the path where you imported the cert,
 	$ export JAVA_HOME=/opt/sun-java2-6.0/; mvn clean install
 -->
 					<!-- more output w/ verbose; default: false -->
-					<!-- <verbose>false</verbose> -->
+					<!-- <verbose>true</verbose> -->
 
 					<!-- server and connection details -->
-					<!-- <hudsonURL>https://hudson.qa.jboss.com/hudson/</hudsonURL> -->
 					<hudsonURL>http://localhost:8080/</hudsonURL>
+					<!-- <hudsonURL>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/</hudsonURL> -->
 					<username>SET USERNAME HERE</username>
 					<password>SET PASSWORD HERE</password>
 
