@@ -57,7 +57,7 @@
 	<displayName>jbosstools-3.2_stable_branch.component--examples
 	</displayName>
 	<name>jbosstools-3.2_stable_branch.component--examples</name>
-	<url>http://hudson.qa.jboss.com/hudson/view/DevStudio_Stable_Branch/job/jbosstools-3.2_stable_branch.component--examples/
+	<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/view/DevStudio_Stable_Branch/job/jbosstools-3.2_stable_branch.component--examples/
 	</url>
 	<buildable>true</buildable>
 	<build>
@@ -107,7 +107,7 @@
 		<number>29</number>
 		<result>SUCCESS</result>
 		<timestamp>1298713883708</timestamp>
-		<url>http://hudson.qa.jboss.com/hudson/view/DevStudio_Stable_Branch/job/jbosstools-3.2_stable_branch.component--examples/29/
+		<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/view/DevStudio_Stable_Branch/job/jbosstools-3.2_stable_branch.component--examples/29/
 		</url>
 		<builtOn>vmg20-rhel5-x86</builtOn>
 		<changeSet>
@@ -172,7 +172,7 @@
 		<number>29</number>
 		<result>SUCCESS</result>
 		<timestamp>1298713883708</timestamp>
-		<url>http://hudson.qa.jboss.com/hudson/view/DevStudio_Stable_Branch/job/jbosstools-3.2_stable_branch.component--examples/29/
+		<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/view/DevStudio_Stable_Branch/job/jbosstools-3.2_stable_branch.component--examples/29/
 		</url>
 		<builtOn>vmg20-rhel5-x86</builtOn>
 		<changeSet>
@@ -249,7 +249,7 @@
 		<number>29</number>
 		<result>SUCCESS</result>
 		<timestamp>1298713883708</timestamp>
-		<url>http://hudson.qa.jboss.com/hudson/view/DevStudio_Stable_Branch/job/jbosstools-3.2_stable_branch.component--examples/29/
+		<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/view/DevStudio_Stable_Branch/job/jbosstools-3.2_stable_branch.component--examples/29/
 		</url>
 		<builtOn>vmg20-rhel5-x86</builtOn>
 		<changeSet>
@@ -313,7 +313,7 @@
 		<number>29</number>
 		<result>SUCCESS</result>
 		<timestamp>1298713883708</timestamp>
-		<url>http://hudson.qa.jboss.com/hudson/view/DevStudio_Stable_Branch/job/jbosstools-3.2_stable_branch.component--examples/29/
+		<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/view/DevStudio_Stable_Branch/job/jbosstools-3.2_stable_branch.component--examples/29/
 		</url>
 		<builtOn>vmg20-rhel5-x86</builtOn>
 		<changeSet>
@@ -377,7 +377,7 @@
 		<number>29</number>
 		<result>SUCCESS</result>
 		<timestamp>1298713883708</timestamp>
-		<url>http://hudson.qa.jboss.com/hudson/view/DevStudio_Stable_Branch/job/jbosstools-3.2_stable_branch.component--examples/29/
+		<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/view/DevStudio_Stable_Branch/job/jbosstools-3.2_stable_branch.component--examples/29/
 		</url>
 		<builtOn>vmg20-rhel5-x86</builtOn>
 		<changeSet>
@@ -441,7 +441,7 @@
 		<number>29</number>
 		<result>SUCCESS</result>
 		<timestamp>1298713883708</timestamp>
-		<url>http://hudson.qa.jboss.com/hudson/view/DevStudio_Stable_Branch/job/jbosstools-3.2_stable_branch.component--examples/29/
+		<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/view/DevStudio_Stable_Branch/job/jbosstools-3.2_stable_branch.component--examples/29/
 		</url>
 		<builtOn>vmg20-rhel5-x86</builtOn>
 		<changeSet>
@@ -587,53 +587,53 @@
 			Job Cascade &amp;amp; Results&lt;/a&gt;&lt;/h2&gt; </description>
 		<displayName>jbosstools-3.2_stable_branch.aggregate</displayName>
 		<name>jbosstools-3.2_stable_branch.aggregate</name>
-		<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/
+		<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/
 		</url>
 		<buildable>true</buildable>
 		<build>
 			<number>334</number>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/334/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/334/
 			</url>
 		</build>
 		<build>
 			<number>333</number>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/333/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/333/
 			</url>
 		</build>
 		<build>
 			<number>332</number>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/332/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/332/
 			</url>
 		</build>
 		<build>
 			<number>331</number>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/331/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/331/
 			</url>
 		</build>
 		<build>
 			<number>330</number>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/330/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/330/
 			</url>
 		</build>
 		<build>
 			<number>329</number>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/329/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/329/
 			</url>
 		</build>
 		<build>
 			<number>311</number>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/311/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/311/
 			</url>
 		</build>
 		<build>
 			<number>50</number>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/50/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/50/
 			</url>
 		</build>
 		<color>blue</color>
 		<firstBuild>
 			<number>50</number>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/50/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/50/
 			</url>
 		</firstBuild>
 		<healthReport>
@@ -645,22 +645,22 @@
 		<keepDependencies>false</keepDependencies>
 		<lastBuild>
 			<number>334</number>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/334/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/334/
 			</url>
 		</lastBuild>
 		<lastCompletedBuild>
 			<number>334</number>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/334/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/334/
 			</url>
 		</lastCompletedBuild>
 		<lastStableBuild>
 			<number>334</number>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/334/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/334/
 			</url>
 		</lastStableBuild>
 		<lastSuccessfulBuild>
 			<number>334</number>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/334/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.aggregate/334/
 			</url>
 		</lastSuccessfulBuild>
 		<nextBuildNumber>335</nextBuildNumber>
@@ -738,141 +738,141 @@
 		<concurrentBuild>false</concurrentBuild>
 		<downstreamProject>
 			<name>devstudio-4.0_stable_branch.updatesite</name>
-			<url>http://hudson.qa.jboss.com/hudson/job/devstudio-4.0_stable_branch.updatesite/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/devstudio-4.0_stable_branch.updatesite/
 			</url>
 			<color>blue</color>
 		</downstreamProject>
 		<downstreamProject>
 			<name>zz_disabled_jbosstools-3.2_stable_branch.aggregate-publish
 			</name>
-			<url>http://hudson.qa.jboss.com/hudson/job/zz_disabled_jbosstools-3.2_stable_branch.aggregate-publish/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/zz_disabled_jbosstools-3.2_stable_branch.aggregate-publish/
 			</url>
 			<color>disabled</color>
 		</downstreamProject>
 		<scm></scm>
 		<upstreamProject>
 			<name>jbosstools-3.2_stable_branch.component--birt</name>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--birt/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.component--birt/
 			</url>
 			<color>blue</color>
 		</upstreamProject>
 		<upstreamProject>
 			<name>jbosstools-3.2_stable_branch.component--bpel</name>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--bpel/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.component--bpel/
 			</url>
 			<color>blue</color>
 		</upstreamProject>
 		<upstreamProject>
 			<name>jbosstools-3.2_stable_branch.component--deltacloud</name>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--deltacloud/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.component--deltacloud/
 			</url>
 			<color>blue</color>
 		</upstreamProject>
 		<upstreamProject>
 			<name>jbosstools-3.2_stable_branch.component--esb</name>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--esb/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.component--esb/
 			</url>
 			<color>blue</color>
 		</upstreamProject>
 		<upstreamProject>
 			<name>jbosstools-3.2_stable_branch.component--examples</name>
-			<url>http://hudson.qa.jboss.com/hudson/view/DevStudio_Stable_Branch/job/jbosstools-3.2_stable_branch.component--examples/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/view/DevStudio_Stable_Branch/job/jbosstools-3.2_stable_branch.component--examples/
 			</url>
 			<color>blue</color>
 		</upstreamProject>
 		<upstreamProject>
 			<name>jbosstools-3.2_stable_branch.component--gwt</name>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--gwt/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.component--gwt/
 			</url>
 			<color>blue</color>
 		</upstreamProject>
 		<upstreamProject>
 			<name>jbosstools-3.2_stable_branch.component--jbpm</name>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--jbpm/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.component--jbpm/
 			</url>
 			<color>blue</color>
 		</upstreamProject>
 		<upstreamProject>
 			<name>jbosstools-3.2_stable_branch.component--maven</name>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--maven/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.component--maven/
 			</url>
 			<color>blue</color>
 		</upstreamProject>
 		<upstreamProject>
 			<name>jbosstools-3.2_stable_branch.component--modeshape</name>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--modeshape/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.component--modeshape/
 			</url>
 			<color>blue</color>
 		</upstreamProject>
 		<upstreamProject>
 			<name>jbosstools-3.2_stable_branch.component--portlet</name>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--portlet/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.component--portlet/
 			</url>
 			<color>blue</color>
 		</upstreamProject>
 		<upstreamProject>
 			<name>jbosstools-3.2_stable_branch.component--profiler</name>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--profiler/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.component--profiler/
 			</url>
 			<color>blue</color>
 		</upstreamProject>
 		<upstreamProject>
 			<name>jbosstools-3.2_stable_branch.component--runtime</name>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--runtime/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.component--runtime/
 			</url>
 			<color>blue</color>
 		</upstreamProject>
 		<upstreamProject>
 			<name>jbosstools-3.2_stable_branch.component--smooks</name>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--smooks/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.component--smooks/
 			</url>
 			<color>blue</color>
 		</upstreamProject>
 		<upstreamProject>
 			<name>jbosstools-3.2_stable_branch.component--struts</name>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--struts/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.component--struts/
 			</url>
 			<color>blue</color>
 		</upstreamProject>
 		<upstreamProject>
 			<name>jbosstools-3.2_stable_branch.component--tptp</name>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--tptp/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.component--tptp/
 			</url>
 			<color>blue</color>
 		</upstreamProject>
 		<upstreamProject>
 			<name>jbosstools-3.2_stable_branch.component--usage</name>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--usage/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.component--usage/
 			</url>
 			<color>blue</color>
 		</upstreamProject>
 		<upstreamProject>
 			<name>jbosstools-3.2_stable_branch.component--ws</name>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--ws/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.component--ws/
 			</url>
 			<color>blue</color>
 		</upstreamProject>
 		<upstreamProject>
 			<name>jbosstools-drools-5.2_stable_branch</name>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-drools-5.2_stable_branch/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-drools-5.2_stable_branch/
 			</url>
 			<color>disabled</color>
 		</upstreamProject>
 		<upstreamProject>
 			<name>jbosstools-pi4soa-3.1_stable_branch</name>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-pi4soa-3.1_stable_branch/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-pi4soa-3.1_stable_branch/
 			</url>
 			<color>blue</color>
 		</upstreamProject>
 		<upstreamProject>
 			<name>jbosstools-savara-1.1_stable_branch</name>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-savara-1.1_stable_branch/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-savara-1.1_stable_branch/
 			</url>
 			<color>blue</color>
 		</upstreamProject>
 		<upstreamProject>
 			<name>jbosstools-teiid-designer-7.1_stable_branch</name>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-teiid-designer-7.1_stable_branch/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-teiid-designer-7.1_stable_branch/
 			</url>
 			<color>blue</color>
 		</upstreamProject>
@@ -949,18 +949,18 @@
 		<displayName>jbosstools-3.2_stable_branch.component--tests
 		</displayName>
 		<name>jbosstools-3.2_stable_branch.component--tests</name>
-		<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--tests/
+		<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.component--tests/
 		</url>
 		<buildable>true</buildable>
 		<build>
 			<number>14</number>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--tests/14/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.component--tests/14/
 			</url>
 		</build>
 		<color>blue</color>
 		<firstBuild>
 			<number>14</number>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--tests/14/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.component--tests/14/
 			</url>
 		</firstBuild>
 		<healthReport>
@@ -972,22 +972,22 @@
 		<keepDependencies>false</keepDependencies>
 		<lastBuild>
 			<number>14</number>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--tests/14/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.component--tests/14/
 			</url>
 		</lastBuild>
 		<lastCompletedBuild>
 			<number>14</number>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--tests/14/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.component--tests/14/
 			</url>
 		</lastCompletedBuild>
 		<lastStableBuild>
 			<number>14</number>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--tests/14/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.component--tests/14/
 			</url>
 		</lastStableBuild>
 		<lastSuccessfulBuild>
 			<number>14</number>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--tests/14/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.component--tests/14/
 			</url>
 		</lastSuccessfulBuild>
 		<nextBuildNumber>15</nextBuildNumber>
@@ -1040,86 +1040,86 @@
 		<concurrentBuild>false</concurrentBuild>
 		<downstreamProject>
 			<name>jbosstools-3.2_stable_branch.component--archives</name>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--archives/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.component--archives/
 			</url>
 			<color>blue</color>
 		</downstreamProject>
 		<downstreamProject>
 			<name>jbosstools-3.2_stable_branch.component--birt</name>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--birt/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.component--birt/
 			</url>
 			<color>blue</color>
 		</downstreamProject>
 		<downstreamProject>
 			<name>jbosstools-3.2_stable_branch.component--bpel</name>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--bpel/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.component--bpel/
 			</url>
 			<color>blue</color>
 		</downstreamProject>
 		<downstreamProject>
 			<name>jbosstools-3.2_stable_branch.component--common</name>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--common/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.component--common/
 			</url>
 			<color>blue</color>
 		</downstreamProject>
 		<downstreamProject>
 			<name>jbosstools-3.2_stable_branch.component--examples</name>
-			<url>http://hudson.qa.jboss.com/hudson/view/DevStudio_Stable_Branch/job/jbosstools-3.2_stable_branch.component--examples/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/view/DevStudio_Stable_Branch/job/jbosstools-3.2_stable_branch.component--examples/
 			</url>
 			<color>blue</color>
 		</downstreamProject>
 		<downstreamProject>
 			<name>jbosstools-3.2_stable_branch.component--flow</name>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--flow/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.component--flow/
 			</url>
 			<color>blue</color>
 		</downstreamProject>
 		<downstreamProject>
 			<name>jbosstools-3.2_stable_branch.component--freemarker</name>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--freemarker/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.component--freemarker/
 			</url>
 			<color>blue</color>
 		</downstreamProject>
 		<downstreamProject>
 			<name>jbosstools-3.2_stable_branch.component--jmx</name>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--jmx/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.component--jmx/
 			</url>
 			<color>blue</color>
 		</downstreamProject>
 		<downstreamProject>
 			<name>jbosstools-3.2_stable_branch.component--modeshape</name>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--modeshape/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.component--modeshape/
 			</url>
 			<color>blue</color>
 		</downstreamProject>
 		<downstreamProject>
 			<name>jbosstools-3.2_stable_branch.component--portlet</name>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--portlet/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.component--portlet/
 			</url>
 			<color>blue</color>
 		</downstreamProject>
 		<downstreamProject>
 			<name>jbosstools-3.2_stable_branch.component--profiler</name>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--profiler/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.component--profiler/
 			</url>
 			<color>blue</color>
 		</downstreamProject>
 		<downstreamProject>
 			<name>jbosstools-3.2_stable_branch.component--smooks</name>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--smooks/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.component--smooks/
 			</url>
 			<color>blue</color>
 		</downstreamProject>
 		<downstreamProject>
 			<name>jbosstools-3.2_stable_branch.component--tptp</name>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.component--tptp/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.component--tptp/
 			</url>
 			<color>blue</color>
 		</downstreamProject>
 		<scm></scm>
 		<upstreamProject>
 			<name>jbosstools-3.2_stable_branch.target-platform</name>
-			<url>http://hudson.qa.jboss.com/hudson/job/jbosstools-3.2_stable_branch.target-platform/
+			<url>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/job/jbosstools-3.2_stable_branch.target-platform/
 			</url>
 			<color>blue</color>
 		</upstreamProject>

@@ -4,16 +4,16 @@ To be able to connect to server, must first import certificate or you may get th
 
 AS USER (with Firefox):
 
-Browse to https://hudson.qa.jboss.com/hudson & accept the cert.
+Browse to https://jenkins.mw.lab.eng.bos.redhat.com/hudson & accept the cert.
 
-	Edit > Preferences > Advanced > Encryption > View Certificates > find hudson cert > Export to file /tmp/hudson.qa.jboss.com
+	Edit > Preferences > Advanced > Encryption > View Certificates > find hudson cert > Export to file /tmp/jenkins.mw.lab.eng.bos.redhat.com
 
 AS ROOT (default password is "changeit"):
 
 	# /opt/sun-java2-6.0/jre/bin/keytool -list -keystore /opt/sun-java2-6.0/jre/lib/security/cacerts | grep hudson
 		# (if you need to replace a cert, delete the old one first)
 		# /opt/sun-java2-6.0/jre/bin/keytool -delete -alias hudson.qa -keystore /opt/sun-java2-6.0/jre/lib/security/cacerts
-	# /opt/sun-java2-6.0/jre/bin/keytool -import -alias hudson.qa -keystore /opt/sun-java2-6.0/jre/lib/security/cacerts -file /tmp/hudson.qa.jboss.com
+	# /opt/sun-java2-6.0/jre/bin/keytool -import -alias hudson.qa -keystore /opt/sun-java2-6.0/jre/lib/security/cacerts -file /tmp/jenkins.mw.lab.eng.bos.redhat.com
 	# /opt/sun-java2-6.0/jre/bin/keytool -list -keystore /opt/sun-java2-6.0/jre/lib/security/cacerts | grep hudson
 
 -----
@@ -41,7 +41,7 @@ Now, to use this plugin in your own project:
 					<verbose>true</verbose>
 
 					<!-- server and connection details -->
-					<!-- <hudsonURL>https://hudson.qa.jboss.com/hudson/</hudsonURL> -->
+					<!-- <hudsonURL>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/</hudsonURL> -->
 					<hudsonURL>http://localhost:8080/</hudsonURL>
 					<username>SET USERNAME HERE</username>
 					<password>SET PASSWORD HERE</password>

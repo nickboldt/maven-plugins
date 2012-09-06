@@ -27,7 +27,7 @@ public class HudsonJobScheduleCheckerMojoTest {
 	HudsonJobScheduleCheckerMojo scheduleChecker;
 
 	// private static final String hudsonURL =
-	// "https://hudson.qa.jboss.com/hudson/";
+	// "https://jenkins.mw.lab.eng.bos.redhat.com/hudson/";
 	private static final String hudsonURL = "http://localhost:8080/";
 	private static boolean verbose = false;
 

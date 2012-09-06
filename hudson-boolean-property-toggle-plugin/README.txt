@@ -24,16 +24,16 @@ To be able to connect to server, must first import certificate or you may get th
 
 AS USER (with Firefox):
 
-Browse to https://hudson.qa.jboss.com/hudson & accept the cert.
+Browse to https://jenkins.mw.lab.eng.bos.redhat.com/hudson & accept the cert.
 
-	Edit > Preferences > Advanced > Encryption > View Certificates > find hudson cert > Export to file /tmp/hudson.qa.jboss.com.cert
+	Edit > Preferences > Advanced > Encryption > View Certificates > find hudson cert > Export to file /tmp/jenkins.mw.lab.eng.bos.redhat.com.cert
 
 AS ROOT (default password is "changeit"):
 
 	# /opt/sun-java2-6.0/jre/bin/keytool -list -keystore /opt/sun-java2-6.0/jre/lib/security/cacerts | grep hudson
 		# (if you need to replace a cert, delete the old one first)
 		# /opt/sun-java2-6.0/jre/bin/keytool -delete -alias hudson.qa -keystore /opt/sun-java2-6.0/jre/lib/security/cacerts
-	# /opt/sun-java2-6.0/jre/bin/keytool -import -alias hudson.qa -keystore /opt/sun-java2-6.0/jre/lib/security/cacerts -file /tmp/hudson.qa.jboss.com.cert
+	# /opt/sun-java2-6.0/jre/bin/keytool -import -alias hudson.qa -keystore /opt/sun-java2-6.0/jre/lib/security/cacerts -file /tmp/jenkins.mw.lab.eng.bos.redhat.com.cert
 	# /opt/sun-java2-6.0/jre/bin/keytool -list -keystore /opt/sun-java2-6.0/jre/lib/security/cacerts | grep hudson
 
 To run, make sure that JAVA_HOME is set to the path where you imported the cert, eg.:
@@ -44,24 +44,27 @@ To run, make sure that JAVA_HOME is set to the path where you imported the cert,
 					<!-- <verbose>false</verbose> -->
 
 					<!-- server and connection details -->
-					<!-- <hudsonURL>https://hudson.qa.jboss.com/hudson/</hudsonURL> -->
+					<!-- <hudsonURL>https://jenkins.mw.lab.eng.bos.redhat.com/hudson/</hudsonURL> -->
 					<hudsonURL>http://localhost:8080/</hudsonURL>
 					<username>SET USERNAME HERE</username>
 					<password>SET PASSWORD HERE</password>
 
 					<!-- to select a subset of jobs, use these filters; default: view/myViewName/ -->
-					<viewFilter>view/myViewName/</viewFilter>
+					<!-- <viewFilter>view/DevStudio_Stable_Branch/</viewFilter> -->
+					<!-- <viewFilter>view/DevStudio_Trunk/</viewFilter> -->
 					
-					<!-- default NO_JOB_SELECTED; must set a real job name -->
+					<!-- default .* to select all -->
+					<!-- <regexFilter>.*TEMPLATE.*</regexFilter> -->
+					<!-- <regexFilter>.*</regexFilter> -->
 					<regexFilter>MyJobNameHere</regexFilter>
 
 					<!-- if there's an existing config.xml (not config.$timestamp.xml) then overwrite it if true; default false -->
 					<!-- <overwriteExistingConfigXMLFile>false</overwriteExistingConfigXMLFile> -->
                     
-                    <!-- XPATH expression for boolean field in config.xml which should be toggled from true to false or false to true; default /project/blockBuildWhenUpstreamBuilding -->
+					<!-- XPATH expression for boolean field in config.xml which should be toggled from true to false or false to true; default /project/blockBuildWhenUpstreamBuilding -->
 					<propertyToToggle>/project/blockBuildWhenUpstreamBuilding</propertyToToggle>
 					
-					<!-- when pushing, can also store a copy of the latest configuration with storeSnapshotOnPush = true; default false -->
+					<!-- if pushing, can also store a copy of the latest configuration with storeSnapshotOnPush = true; default false -->
 					<!-- <storeSnapshotOnPush>false</storeSnapshotOnPush> -->
 
 				</configuration>

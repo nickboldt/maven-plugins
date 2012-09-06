@@ -22,7 +22,7 @@ public class HudsonJobBooleanPropertyToggleMojoTest {
 
 	// String excludes;
 
-	// actual JBoss Hudson server: http://hudson.qa.jboss.com/hudson/
+	// actual JBoss Hudson server: https://jenkins.mw.lab.eng.bos.redhat.com/hudson/
 	// private static final String hudsonURL = "http://localhost:8080/";
 	// private static Process hudsonServer;
 	// private static boolean verbose;

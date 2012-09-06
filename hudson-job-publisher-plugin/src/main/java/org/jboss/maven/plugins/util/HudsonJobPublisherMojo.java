@@ -583,7 +583,7 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 	}
 
 	// submit to
-	// http://hudson.qa.jboss.com/hudson/createItem?name=NEWJOBNAME&mode=copy&from=FROMJOBNAME
+	// https://jenkins.mw.lab.eng.bos.redhat.com/hudson/createItem?name=NEWJOBNAME&mode=copy&from=FROMJOBNAME
 	// this works but ends up losing XML in the resulting config.xml file
 	public String[] copyJob(String xmlContents, String fromJobName,
 			String newJobName, boolean getErrorMessage)
@@ -597,7 +597,7 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 	}
 
 	// submit to
-	// http://hudson.qa.jboss.com/hudson/createItem?name=NEWJOBNAME&mode=copy&from=FROMJOBNAME
+	// https://jenkins.mw.lab.eng.bos.redhat.com/hudson/createItem?name=NEWJOBNAME&mode=copy&from=FROMJOBNAME
 	// this works but ends up losing XML in the resulting config.xml file
 	public String[] copyJobConfigXML(String xmlContents, String fromJobName,
 			String newJobName, boolean getErrorMessage) throws IOException,
