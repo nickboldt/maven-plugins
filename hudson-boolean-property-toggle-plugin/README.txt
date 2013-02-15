@@ -1,3 +1,11 @@
+== hudson-boolean-property-toggle-plugin ==
+
+Goal of this project was to be able to remotely toggle a property like disabled={true,false} or blockBuildWhenUpstreamBuilding={true,false}, but it doesn't seem to work as expected.
+
+CAVEAT EMPTOR, pull requests welcome.
+
+--------------------------------------
+
 To use this plugin in your own project:
 
 1. Add it to your pom.xml with this:
