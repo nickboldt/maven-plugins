@@ -65,7 +65,7 @@ osgi-test:test :: just (re-)run test(s)
       </hudson.scm.SubversionSCM_-ModuleLocation>
       <hudson.scm.SubversionSCM_-ModuleLocation>
 
-        <remote>http://svn.jboss.org/repos/jbosstools/trunk/build</remote>
+        <remote>http://svn.jboss.org/repos/jbosstools/trunk/build/publish</remote>
       </hudson.scm.SubversionSCM_-ModuleLocation>
     </locations>
     <useUpdate>true</useUpdate>
