@@ -47,7 +47,7 @@ import org.dom4j.io.SAXReader;
 public class HudsonJobSyncMojo extends AbstractMojo {
 
 	/**
-	 * @parameter expression="${verbose}" default-value="false"
+	 * @parameter property="verbose" default-value="false"
 	 */
 	private boolean verbose = false;
 
@@ -60,7 +60,7 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 	}
 
 	/**
-	 * @parameter expression="${hudsonURL}"
+	 * @parameter property="hudsonURL"
 	 *            default-value="http://localhost:8080/"
 	 */
 	private String hudsonURL = "http://localhost:8080/";
@@ -74,7 +74,7 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 	}
 
 	/**
-	 * @parameter expression="${username}" default-value="admin"
+	 * @parameter property="username" default-value="admin"
 	 */
 	private String username = "admin";
 
@@ -87,7 +87,7 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 	}
 
 	/**
-	 * @parameter expression="${password}" default-value="none"
+	 * @parameter property="password" default-value="none"
 	 */
 	private String password = "none";
 
@@ -100,7 +100,7 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 	}
 
 	/**
-	 * @parameter expression="${viewFilter}" default-value="view/myViewName/"
+	 * @parameter property="viewFilter" default-value="view/myViewName/"
 	 */
 	private String viewFilter = "view/myViewName/";
 
@@ -116,7 +116,7 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 	}
 
 	/**
-	 * @parameter expression="${regexFilter}" default-value=".*"
+	 * @parameter property="regexFilter" default-value=".*"
 	 */
 	private String regexFilter = ".*";
 
@@ -131,7 +131,7 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 	}
 
 	/**
-	 * @parameter expression="${operation}" default-value="pull"
+	 * @parameter property="operation" default-value="pull"
 	 */
 	private String operation = "pull";
 
@@ -144,7 +144,7 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 	}
 
 	/**
-	 * @parameter expression="${overwriteExistingConfigXMLFile}"
+	 * @parameter property="overwriteExistingConfigXMLFile"
 	 *            default-value="false"
 	 */
 	private boolean overwriteExistingConfigXMLFile = false;
@@ -159,7 +159,7 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 	}
 
 	/**
-	 * @parameter expression="${storeSnapshotOnPush}" default-value="false"
+	 * @parameter property="storeSnapshotOnPush" default-value="false"
 	 */
 	private boolean storeSnapshotOnPush = false;
 
