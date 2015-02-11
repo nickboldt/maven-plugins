@@ -45,7 +45,7 @@ import org.dom4j.io.SAXReader;
 public class HudsonJobPublisherMojo extends AbstractMojo {
 
 	/**
-	 * @parameter expression="${verbose}" default-value="false"
+	 * @parameter property="verbose" default-value="false"
 	 */
 	private boolean verbose = false;
 
@@ -58,7 +58,7 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 	}
 
 	/**
-	 * @parameter expression="${hudsonURL}"
+	 * @parameter property="hudsonURL"
 	 *            default-value="http://localhost:8080/"
 	 */
 	private String hudsonURL = "http://localhost:8080/";
@@ -72,7 +72,7 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 	}
 
 	/**
-	 * @parameter expression="${username}" default-value="admin"
+	 * @parameter property="username" default-value="admin"
 	 */
 	private String username = "admin";
 
@@ -85,7 +85,7 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 	}
 
 	/**
-	 * @parameter expression="${password}" default-value="none"
+	 * @parameter property="password" default-value="none"
 	 */
 	private String password = "none";
 
@@ -98,7 +98,7 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 	}
 
 	/**
-	 * @parameter expression="${replaceExistingJob}" default-value="true"
+	 * @parameter property="replaceExistingJob" default-value="true"
 	 */
 	private boolean replaceExistingJob = true;
 
@@ -111,7 +111,7 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 	}
 
 	/**
-	 * @parameter expression="${jobTemplateFile}" default-value="config.xml"
+	 * @parameter property="jobTemplateFile" default-value="config.xml"
 	 */
 	private String jobTemplateFile = "config.xml";
 
@@ -124,7 +124,7 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 	}
 
 	/**
-	 * @parameter expression="${buildURL}"
+	 * @parameter property="buildURL"
 	 *            default-value="http://svn.jboss.org/repos/jbosstools/trunk/build/publish"
 	 */
 	private String buildURL = "http://svn.jboss.org/repos/jbosstools/trunk/build/publish";
@@ -138,7 +138,7 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 	}
 
 	/**
-	 * @parameter expression="${branchOrTag}"
+	 * @parameter property="branchOrTag"
 	 *            default-value="branches/someBranch"
 	 */
 	// branchOrTag is the one used when copying a job and sources' SVN URLs
@@ -153,7 +153,7 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 	}
 
 	/**
-	 * @parameter expression="${properties}"
+	 * @parameter property="properties"
 	 */
 	private Properties jobProperties = new Properties();
 
@@ -166,7 +166,7 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 	}
 
 	/**
-	 * @parameter expression="${components}" default-value=""
+	 * @parameter property="components" default-value=""
 	 */
 	private String components = "";
 
@@ -179,7 +179,7 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 	}
 
 	/**
-	 * @parameter expression="${componentJobNameSuffix}" default-value=""
+	 * @parameter property="componentJobNameSuffix" default-value=""
 	 */
 	private String componentJobNameSuffix = "";
 
@@ -192,7 +192,7 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 	}
 
 	/**
-	 * @parameter expression="${componentJobNameSuffix2}" default-value=""
+	 * @parameter property="componentJobNameSuffix2" default-value=""
 	 */
 	// replacement for componentJobNameSuffix when copying jobs
 	private String componentJobNameSuffix2 = "";
@@ -206,7 +206,7 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 	}
 
 	/**
-	 * @parameter expression="${componentJobNamePrefix}"
+	 * @parameter property="componentJobNamePrefix"
 	 *            default-value="jbosstools-"
 	 */
 	// replacement for componentJobNameSuffix when copying jobs
@@ -224,7 +224,7 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 	 * filter the server to show only one view's worth of jobs (not the whole
 	 * server list)
 	 * 
-	 * @parameter expression="${componentJobNamePrefix}" default-value=""
+	 * @parameter property="componentJobNamePrefix" default-value=""
 	 */
 	// replacement for componentJobNameSuffix when copying jobs
 	private String viewPath = "view/DevStudio/view/DevStudio_Trunk/"; // "view/DevStudio/view/DevStudio_Stable_Branch/";
