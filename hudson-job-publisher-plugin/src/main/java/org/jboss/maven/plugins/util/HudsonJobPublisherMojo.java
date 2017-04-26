@@ -478,7 +478,7 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 			String sourcesURL = jobProperties.getProperty(jobName);
 
 			// TODO: when copying a job, do more than just simple update here
-			updateConfigXML(sourcesURL, jobTemplateFile, xmlFile);
+			//updateConfigXML(sourcesURL, jobTemplateFile, xmlFile); // don't do SVN update
 
 			// delete existing job
 			if (replaceExistingJob) {
