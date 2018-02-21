@@ -6,18 +6,15 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.URIException;
@@ -25,7 +22,6 @@ import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
-import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -60,8 +56,7 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 	}
 
 	/**
-	 * @parameter property="hudsonURL"
-	 *            default-value="http://localhost:8080/"
+	 * @parameter property="hudsonURL" default-value="http://localhost:8080/"
 	 */
 	private String hudsonURL = "http://localhost:8080/";
 
@@ -144,8 +139,7 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 	}
 
 	/**
-	 * @parameter property="overwriteExistingConfigXMLFile"
-	 *            default-value="false"
+	 * @parameter property="overwriteExistingConfigXMLFile" default-value="false"
 	 */
 	private boolean overwriteExistingConfigXMLFile = false;
 
@@ -153,8 +147,7 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 		return overwriteExistingConfigXMLFile;
 	}
 
-	public void setOverwriteExistingConfigXMLFile(
-			boolean overwriteExistingConfigXMLFile) {
+	public void setOverwriteExistingConfigXMLFile(boolean overwriteExistingConfigXMLFile) {
 		this.overwriteExistingConfigXMLFile = overwriteExistingConfigXMLFile;
 	}
 
@@ -180,9 +173,8 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 		// "view/DevStudio_Trunk/" (with trailing slash)
 		// note: URLSuffix is ignored when accessing a localhost Hudson
 		// instance, as it's assumed we're testing + view may not exist
-		HttpMethod method = new GetMethod(hudsonURL
-				+ (hudsonURL.indexOf("localhost") >= 0 ? "" : URLSuffix)
-				+ "api/xml");
+		HttpMethod method = new GetMethod(
+				hudsonURL + (hudsonURL.indexOf("localhost") >= 0 ? "" : URLSuffix) + "api/xml");
 		method.setDoAuthentication(true);
 		client.executeMethod(method);
 		checkResult(method.getStatusCode(), method.getURI());
@@ -234,12 +226,9 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 
 			if (doOverwriteWarning && verbose) {
 				getLog().info("");
-				getLog().info(
-						"To overwrite local config.xml file(s) with server copy, use");
-				getLog().info(
-						"  `mvn clean install -DoverwriteExistingConfigXMLFile=true`, or ");
-				getLog().info(
-						"  <overwriteExistingConfigXMLFile>true</overwriteExistingConfigXMLFile> in pom");
+				getLog().info("To overwrite local config.xml file(s) with server copy, use");
+				getLog().info("  `mvn clean install -DoverwriteExistingConfigXMLFile=true`, or ");
+				getLog().info("  <overwriteExistingConfigXMLFile>true</overwriteExistingConfigXMLFile> in pom");
 				getLog().info("");
 			}
 		}
@@ -251,9 +240,7 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 		postConfigXML(configXMLFile, jobName);
 		try {
 			if (verbose) {
-				getLog().info(
-						"Local config.xml pushed from: "
-								+ configXMLFile.toString());
+				getLog().info("Local config.xml pushed from: " + configXMLFile.toString());
 			} else {
 				getLog().info("Local config.xml pushed to job: " + jobName);
 			}
@@ -263,8 +250,7 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 		if (storeSnapshotOnPush) {
 			try {
 				// copy config.xml to config.2011-03-29_17:43:40.794.xml
-				FileUtils.copyFile(configXMLFile,
-						getConfigXMLFile(jobName, true));
+				FileUtils.copyFile(configXMLFile, getConfigXMLFile(jobName, true));
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -280,13 +266,9 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 		if (verbose) {
 			try {
 				if (configXMLFile != null) {
-					getLog().info(
-							"Snapshot config.xml generated: "
-									+ configXMLFile.toString());
+					getLog().info("Snapshot config.xml generated: " + configXMLFile.toString());
 				} else {
-					getLog().info(
-							"Snapshot config.xml unchanged: "
-									+ getConfigXMLFilename(jobName));
+					getLog().info("Snapshot config.xml unchanged: " + getConfigXMLFilename(jobName));
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -296,22 +278,17 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 			if (overwriteExistingConfigXMLFile) {
 				try {
 					// copy config.2011-03-29_17:43:40.794.xml to config.xml
-					FileUtils.copyFile(configXMLFile, new File(
-							getConfigXMLFilename(jobName)));
+					FileUtils.copyFile(configXMLFile, new File(getConfigXMLFilename(jobName)));
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 
 				if (verbose) {
-					getLog().info(
-							"Latest  config.xml    updated: "
-									+ getConfigXMLFilename(jobName));
+					getLog().info("Latest  config.xml    updated: " + getConfigXMLFilename(jobName));
 				}
 			} else {
 				if (verbose) {
-					getLog().info(
-							"Latest   config.xml exists in: "
-									+ getJobFolder(jobName));
+					getLog().info("Latest   config.xml exists in: " + getJobFolder(jobName));
 				}
 				doOverwriteWarning = true;
 			}
@@ -325,8 +302,7 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 
 	// cache/$servername/view/$viewname/job/$jobName/
 	private File getJobFolder(String jobName) {
-		String jobFolderPath = "cache/" + hudsonURL.replaceAll("://", "/")
-				+ "/" + viewFilter + "/job/" + jobName + "/";
+		String jobFolderPath = "cache/" + hudsonURL.replaceAll("://", "/") + "/" + viewFilter + "/job/" + jobName + "/";
 		new File(jobFolderPath).mkdirs();
 		return new File(jobFolderPath);
 	}
@@ -334,8 +310,7 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 	// fetch config.xml from server, and store in
 	// cache/$servername/view/$viewname/job/jobName/config.$timestamp.xml
 	// see also createJobFolder(jobName)
-	public File getConfigXMLFile(String jobName, boolean includeTimestamp,
-			boolean writeOnlyIfNew) {
+	public File getConfigXMLFile(String jobName, boolean includeTimestamp, boolean writeOnlyIfNew) {
 		File configXMLFile = null;
 		Document configXML = null;
 		try {
@@ -355,8 +330,7 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 					String latestConfigXMLFilename = getConfigXMLFilename(jobName);
 					File latestConfigXMLFile = new File(latestConfigXMLFilename);
 					// if config.xml doesn't exist, create a new snapshot file
-					if (latestConfigXMLFile == null
-							|| !latestConfigXMLFile.exists()) {
+					if (latestConfigXMLFile == null || !latestConfigXMLFile.exists()) {
 						writeDomToFile(configXML, configXMLFile);
 						return configXMLFile;
 					} else {
@@ -366,19 +340,16 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 						// check XML to see if it's different
 						Document latestConfigXML = null;
 						try {
-							latestConfigXML = new SAXReader()
-									.read(latestConfigXMLFile);
+							latestConfigXML = new SAXReader().read(latestConfigXMLFile);
 							configXML = new SAXReader().read(configXMLFile);
 						} catch (DocumentException e) {
 							e.printStackTrace();
 						}
-						if (latestConfigXML != null
-								&& configXML.asXML().length() == latestConfigXML
-										.asXML().length()
-								&& configXML.asXML().equals(
-										latestConfigXML.asXML())) {
+						if (latestConfigXML != null && configXML.asXML().length() == latestConfigXML.asXML().length()
+								&& configXML.asXML().equals(latestConfigXML.asXML())) {
 							// XML not different.
-							// if (verbose) { getLog().info( "Server copy and local copy are equal for: " + jobName); }
+							// if (verbose) { getLog().info( "Server copy and local copy are equal for: " +
+							// jobName); }
 							FileUtils.fileDelete(configXMLFile.toString());
 							return null;
 						} else {
@@ -398,8 +369,7 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 	}
 
 	public File getConfigXMLFile(String jobName, boolean includeTimestamp) {
-		return new File(getJobFolder(jobName), "config"
-				+ (includeTimestamp ? "." + createTimestamp() : "") + ".xml");
+		return new File(getJobFolder(jobName), "config" + (includeTimestamp ? "." + createTimestamp() : "") + ".xml");
 	}
 
 	private String createTimestamp() {
@@ -408,16 +378,13 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 
 		Calendar cal = Calendar.getInstance();
 		Date now = new Date(cal.getTimeInMillis());
-		java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(
-				now.getTime());
+		java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(now.getTime());
 		return currentTimestamp.toString().replaceAll(" ", "_");
 	}
 
-	public void postConfigXML(File configXMLFile, String jobName)
-			throws MojoExecutionException {
+	public void postConfigXML(File configXMLFile, String jobName) throws MojoExecutionException {
 		// and post it back to the server
-		postXML(configXMLFile, null, hudsonURL + "job/" + jobName
-				+ "/config.xml", true);
+		postXML(configXMLFile, null, hudsonURL + "job/" + jobName + "/config.xml", true);
 
 	}
 
@@ -441,52 +408,40 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 		}
 	}
 
-	public Object[] updateJob(File xmlFile, String jobName,
-			boolean getErrorMessage) {
+	public Object[] updateJob(File xmlFile, String jobName, boolean getErrorMessage) {
 		if (verbose)
 			getLog().info("Update config.xml for job " + jobName);
-		return postXML(xmlFile, null, hudsonURL + "/job/" + jobName
-				+ "/config.xml", getErrorMessage);
+		return postXML(xmlFile, null, hudsonURL + "/job/" + jobName + "/config.xml", getErrorMessage);
 	}
 
-	public Object[] updateJob(String xmlFile, String jobName,
-			boolean getErrorMessage) {
+	public Object[] updateJob(String xmlFile, String jobName, boolean getErrorMessage) {
 		if (verbose)
 			getLog().info("Update config.xml for job " + jobName);
-		return postXML(xmlFile, null, hudsonURL + "/job/" + jobName
-				+ "/config.xml", getErrorMessage);
+		return postXML(xmlFile, null, hudsonURL + "/job/" + jobName + "/config.xml", getErrorMessage);
 	}
 
-	public String[] createJob(File xmlFile, String jobName,
-			boolean getErrorMessage) {
+	public String[] createJob(File xmlFile, String jobName, boolean getErrorMessage) {
 		if (verbose)
 			getLog().info("Create job " + jobName);
-		return postXML(xmlFile, null, hudsonURL + "createItem?name=" + jobName,
-				getErrorMessage);
+		return postXML(xmlFile, null, hudsonURL + "createItem?name=" + jobName, getErrorMessage);
 	}
 
-	public String[] createJob(String xmlFile, String jobName,
-			boolean getErrorMessage) {
+	public String[] createJob(String xmlFile, String jobName, boolean getErrorMessage) {
 		if (verbose)
 			getLog().info("Create job " + jobName);
-		return postXML(xmlFile, null, hudsonURL + "createItem?name=" + jobName,
-				getErrorMessage);
+		return postXML(xmlFile, null, hudsonURL + "createItem?name=" + jobName, getErrorMessage);
 	}
 
-	public String[] deleteJob(File xmlFile, String jobName,
-			boolean getErrorMessage) {
+	public String[] deleteJob(File xmlFile, String jobName, boolean getErrorMessage) {
 		if (verbose)
 			getLog().info("Delete job " + jobName);
-		return postXML(xmlFile, null, hudsonURL + "job/" + jobName
-				+ "/doDelete", getErrorMessage);
+		return postXML(xmlFile, null, hudsonURL + "job/" + jobName + "/doDelete", getErrorMessage);
 	}
 
-	public String[] deleteJob(String xmlFile, String jobName,
-			boolean getErrorMessage) {
+	public String[] deleteJob(String xmlFile, String jobName, boolean getErrorMessage) {
 		if (verbose)
 			getLog().info("Delete job " + jobName);
-		return postXML(xmlFile, null, hudsonURL + "job/" + jobName
-				+ "/doDelete", getErrorMessage);
+		return postXML(xmlFile, null, hudsonURL + "job/" + jobName + "/doDelete", getErrorMessage);
 	}
 
 	private String getErrorMessage(PostMethod post, String jobName) {
@@ -501,11 +456,9 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 			// <p>A job already exists with the name
 			// 'jbosstools-bpel'</p>
 			// see src/main/resources/400-JobExistsError.html
-			for (Element el : (List<Element>) dom
-					.selectNodes("/html/body/table[2]/tr/td/h1")) {
+			for (Element el : (List<Element>) dom.selectNodes("/html/body/table[2]/tr/td/h1")) {
 				if (el.getTextTrim().equals("Error")) {
-					for (Element el2 : (List<Element>) el.getParent()
-							.selectNodes("p")) {
+					for (Element el2 : (List<Element>) el.getParent().selectNodes("p")) {
 						error = el2.getText();
 					}
 				}
@@ -521,13 +474,11 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 		return error;
 	}
 
-	private String[] postXML(String xmlFile, String xmlContents, String jobURL,
-			boolean getErrorMessage) {
+	private String[] postXML(String xmlFile, String xmlContents, String jobURL, boolean getErrorMessage) {
 		return postXML(new File(xmlFile), xmlContents, jobURL, getErrorMessage);
 	}
 
-	private String[] postXML(File xmlFile, String xmlContents, String jobURL,
-			boolean getErrorMessage) {
+	private String[] postXML(File xmlFile, String xmlContents, String jobURL, boolean getErrorMessage) {
 		int resultCode = -1;
 		String responseBody = "";
 		PostMethod post = new PostMethod(jobURL);
@@ -550,8 +501,7 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 		}
 		if (xmlFile != null) {
 			try {
-				post.setRequestEntity(new InputStreamRequestEntity(
-						new FileInputStream(xmlFile), xmlFile.length()));
+				post.setRequestEntity(new InputStreamRequestEntity(new FileInputStream(xmlFile), xmlFile.length()));
 			} catch (FileNotFoundException e) {
 				getLog().error("File not found: " + xmlFile);
 				e.printStackTrace();
@@ -561,17 +511,18 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 			try {
 				throw new MojoExecutionException("Error writing to " + xmlFile);
 			} catch (MojoExecutionException e) {
-				getLog().error(
-						"Error writing to " + xmlFile + " in postXML() !");
+				getLog().error("Error writing to " + xmlFile + " in postXML() !");
 				e.printStackTrace();
 			}
 		}
+
 		// Specify content type and encoding; default to ISO-8859-1
 		post.setRequestHeader("Content-type", "text/xml; charset=ISO-8859-1");
 
 		if (client == null) {
 			client = getHttpClient(username, password);
 		}
+
 		try {
 			resultCode = client.executeMethod(post);
 			if (getErrorMessage) {
@@ -630,8 +581,7 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 			if (!job.elementText("name").toString().replaceAll(regexFilter, "")
 					.equals(job.elementText("name").toString())) {
 				i++;
-				sb.append(String.format("\n[%03d] " + "%s (%s)", i,
-						job.elementText("name"), job.elementText("color")));
+				sb.append(String.format("\n[%03d] " + "%s (%s)", i, job.elementText("name"), job.elementText("color")));
 			}
 		}
 		return sb.toString();
@@ -659,14 +609,12 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 	}
 
 	// for a given job name, return its config.xml as a Document
-	public Document getJobConfigXML(String name, HttpClient client)
-			throws Exception {
+	public Document getJobConfigXML(String name, HttpClient client) throws Exception {
 		return getXML(hudsonURL + "job/" + name + "/config.xml", client);
 	}
 
 	// for a given URL, return an XML Document
-	public Document getXML(String URL, HttpClient client) throws URIException,
-			IOException {
+	public Document getXML(String URL, HttpClient client) throws URIException, IOException {
 		if (client == null) {
 			client = getHttpClient(username, password);
 		}
@@ -735,8 +683,7 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 		return responseBody;
 	}
 
-	public String getResponseBody(HttpMethod method) throws DocumentException,
-			IOException {
+	public String getResponseBody(HttpMethod method) throws DocumentException, IOException {
 		InputStream is = method.getResponseBodyAsStream();
 		Document dom = null;
 		String out = "";
@@ -747,40 +694,28 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 			if (verbose) {
 				// 200: OK
 				// 400: Bad Request (job already exists, cannot createItem)
-				if (method.getStatusCode() != 200
-						&& method.getStatusCode() != 400) {
-					getLog().info(
-							"["
-									+ method.getStatusCode()
-									+ "] "
-									+ method.getStatusText()
-									+ " for "
-									+ method.getName()
-									+ " to "
-									+ method.getPath()
-									+ (method.getQueryString() != null ? "?"
-											+ method.getQueryString() : ""));
+				if (method.getStatusCode() != 200 && method.getStatusCode() != 400) {
+					getLog().info("[" + method.getStatusCode() + "] " + method.getStatusText() + " for "
+							+ method.getName() + " to " + method.getPath()
+							+ (method.getQueryString() != null ? "?" + method.getQueryString() : ""));
 				}
 			}
 		}
 		return out;
 	}
 
-	private static String readFileAsString(String filePath)
-			throws java.io.IOException {
+	private static String readFileAsString(String filePath) throws java.io.IOException {
 		byte[] buffer = new byte[(int) new File(filePath).length()];
 		FileInputStream f = new FileInputStream(filePath);
 		f.read(buffer);
 		return new String(buffer);
 	}
 
-	public void writeDomToFile(Document dom, File file)
-			throws MojoExecutionException {
+	public void writeDomToFile(Document dom, File file) throws MojoExecutionException {
 		writeToFile(dom.asXML(), file);
 	}
 
-	public void writeToFile(String string, File file)
-			throws MojoExecutionException {
+	public void writeToFile(String string, File file) throws MojoExecutionException {
 		FileWriter w = null;
 		try {
 			w = new FileWriter(file);
@@ -862,8 +797,7 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 			directory.mkdirs();
 			return directory;
 		} else {
-			throw new IOException("Could not create temp directory at: "
-					+ directory.getAbsolutePath());
+			throw new IOException("Could not create temp directory at: " + directory.getAbsolutePath());
 		}
 	}
 
