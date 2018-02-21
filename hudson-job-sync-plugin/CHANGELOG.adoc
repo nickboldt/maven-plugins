@@ -1,0 +1,18 @@
+CHANGELOG
+
+0.0.3
+
+* Add support for Jenkins crumbs
+
+0.0.2
+
+* update build to run with mvn 3.5.2 / jdk 8 nboldt@redhat.com
+* disable svn config changes nboldt@redhat.com
+* update hudson-job-publisher-plugin to latest maven 3.3.9
+* update deps to build with Maven 3.3.9; remove deps that don't exist anymore
+
+0.0.1
+
+* update to latest dependency versions so we can compile with Maven 3.1.1/3.2.3
+* remove deprecation warnings re: parameters
+* initial release

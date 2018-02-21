@@ -32,6 +32,8 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
+import com.google.gson.Gson;
+
 /**
  * Given some basic params, publish a Hudson job to a given server
  * 
@@ -523,6 +525,26 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 			client = getHttpClient(username, password);
 		}
 
+		// System.out.println("Issue crumb from: " + hudsonURL + "crumbIssuer/api/json");
+		HttpMethod method = new GetMethod(hudsonURL + "crumbIssuer/api/json");
+		method.setDoAuthentication(true);
+		try {
+			client.executeMethod(method);
+			checkResult(method.getStatusCode(), method.getURI());
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+
+		String crumbResponse = null;
+		try {
+			crumbResponse = method.getResponseBodyAsString();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		CrumbJson crumbJson = new Gson().fromJson(crumbResponse, CrumbJson.class);
+		// add crumb to post request to avoid 403
+		post.addRequestHeader(crumbJson.crumbRequestField, crumbJson.crumb);
+
 		try {
 			resultCode = client.executeMethod(post);
 			if (getErrorMessage) {
@@ -552,6 +574,13 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 		} else {
 			return new String[] { resultCode + "", "" };
 		}
+	}
+
+	// helper construct to deserialize crumb json into strings
+	// https://stackoverflow.com/questions/16738441/how-to-request-for-crumb-issuer-for-jenkins/18360897
+	public static class CrumbJson {
+		public String crumb;
+		public String crumbRequestField;
 	}
 
 	// try {
