@@ -533,7 +533,7 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 			if (method.getStatusCode() != 404) {
 				String crumbResponse = null;
 				try {
-					crumbResponse = method.getResponseBodyAsStream().toString();
+					crumbResponse = method.getResponseBodyAsString();
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
