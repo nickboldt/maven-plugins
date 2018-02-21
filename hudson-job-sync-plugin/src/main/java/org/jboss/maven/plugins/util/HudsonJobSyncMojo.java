@@ -530,20 +530,22 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 		method.setDoAuthentication(true);
 		try {
 			client.executeMethod(method);
-			checkResult(method.getStatusCode(), method.getURI());
+			if (method.getStatusCode() != 404) {
+				String crumbResponse = null;
+				try {
+					crumbResponse = method.getResponseBodyAsStream().toString();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+				CrumbJson crumbJson = new Gson().fromJson(crumbResponse, CrumbJson.class);
+				// add crumb to post request to avoid 403
+				post.addRequestHeader(crumbJson.crumbRequestField, crumbJson.crumb);
+			} else {
+				getLog().warn("crumbIssuer for cross site request forgery (CSRF) protection is not enabled in this Jenkins. See https://wiki.jenkins.io/display/JENKINS/CSRF+Protection");
+			}
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-
-		String crumbResponse = null;
-		try {
-			crumbResponse = method.getResponseBodyAsString();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		CrumbJson crumbJson = new Gson().fromJson(crumbResponse, CrumbJson.class);
-		// add crumb to post request to avoid 403
-		post.addRequestHeader(crumbJson.crumbRequestField, crumbJson.crumb);
 
 		try {
 			resultCode = client.executeMethod(post);
