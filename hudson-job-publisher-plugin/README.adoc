@@ -6,9 +6,9 @@
 ---
 
 [start=1]
-. Once built, you can then configure its use in *your own project*. See link:pom-sync.xml[pom-sync.xml] for a sample invocation, and run it like this:
+. Once built, you can then configure its use in *your own project*. See link:pom-publisher.xml[pom-publisher.xml] for a sample invocation, and run it like this:
 
-	$ export JAVA_HOME=/opt/sun-java2-8.0/; mvn clean install -f pom-sync.xml -Doperation=pull
+	$ export JAVA_HOME=/opt/sun-java2-8.0/; mvn clean install -f pom-publisher.xml
 
 ---
 
@@ -37,5 +37,4 @@ NOTE: The default Java keystore password is *changeit*.
 [start=3]
 . Make sure that JAVA_HOME is set to the path where you imported the cert, eg.:
 
-	export JAVA_HOME=/opt/sun-java2-8.0/; mvn clean install -f pom-sync.xml -Doperation=pull
-
+	export JAVA_HOME=/opt/sun-java2-8.0/; mvn clean install -f pom-publisher.xml
