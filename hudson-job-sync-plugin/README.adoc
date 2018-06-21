@@ -1,18 +1,15 @@
+= Usage
+
+== Build the maven mojo
+
 [start=0]
 . You will need to BUILD this project first.
 
 	$ export JAVA_HOME=/opt/sun-java2-8.0/; mvn clean install -DskipTests
 
----
+== Configure your JDK's keystore
 
 [start=1]
-. Once built, you can then configure its use in *your own project*. See link:pom-sync.xml[pom-sync.xml] for a sample invocation, and run it like this:
-
-	$ export JAVA_HOME=/opt/sun-java2-8.0/; mvn clean install -f pom-sync.xml -Doperation=pull
-
----
-
-[start=2]
 . NOTE: if your Jenkins/Hudson server runs on https, must first import its certificate or you may get this error:
 
 	javax.net.ssl.SSLHandshakeException: sun.security.validator.ValidatorException: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
@@ -27,15 +24,39 @@ Browse to https://dev-platform-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/ & accept
 
 .. *AS ROOT*:
 +
-Import the cert to your existing JDK keystore(s), by running link:../cert.import.sh[cert.import.sh].
+Import the cert to your existing JDK keystore(s), by running *link:../cert.import.sh[cert.import.sh]*.
 
 
 	./cert.import.sh /path/to/exported.cert
 
 NOTE: The default Java keystore password is *changeit*.
 
-[start=3]
+[start=2]
 . Make sure that JAVA_HOME is set to the path where you imported the cert, eg.:
 
 	export JAVA_HOME=/opt/sun-java2-8.0/; mvn clean install -f pom-sync.xml -Doperation=pull
+
+== Configure mojo usage
+
+[start=3]
+. Next, you need a pom file to drive the tool's configuration, if you don't want to have to pass in username/password/URL param every time on the commandline.
++
+Copy and edit *link:pom-sync.xml[pom-sync.xml]* to somewhere on your machine, perhaps the root folder where you have a link:https://github.com/nickboldt/eclipse.ci.jobs[cache of your config.xml files checked out].
+
+== Run the mojo
+
+[start=4]
+. Once your pom is configured with your credentials, you can use this tool. Invoke it by hand like this:
+
+	$ export JAVA_HOME=/opt/sun-java2-8.0/; mvn clean install -f pom-sync.xml -Doperation=pull -DviewFilter=view/webtools_R3_10/ ...
+
+. Or easier, use one of these scripts to push or pull files.
+
+* *link:scripts/hudpull-eclipseJIPP.sh[operation = pull]*
+* *link:scripts/hudpush-eclipseJIPP.sh[operation = push]*
+
+== Commit changes
+
+[start=6]
+. After confirming your changes are pushed to the remote server, and didn't break anything, you can commit the same changes to your local link:https://github.com/nickboldt/eclipse.ci.jobs[config.xml cache] for storage/versioning.
 
