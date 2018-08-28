@@ -991,19 +991,20 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 		InputStream is = method.getResponseBodyAsStream();
 		Document dom = null;
 		String out = "";
+
+		if (verbose) {
+			// 200: OK
+			// 400: Bad Request (job already exists, cannot createItem)
+			if (method.getStatusCode() != 200 && method.getStatusCode() != 400) {
+				getLog().info("[" + method.getStatusCode() + "] " + method.getStatusText() + " for "
+						+ method.getName() + " to " + method.getPath()
+						+ (method.getQueryString() != null ? "?" + method.getQueryString() : ""));
+			}
+		}
+
 		if (is.available() > 0) {
 			dom = new SAXReader().read(is);
 			out = dom.asXML();
-		} else {
-			if (verbose) {
-				// 200: OK
-				// 400: Bad Request (job already exists, cannot createItem)
-				if (method.getStatusCode() != 200 && method.getStatusCode() != 400) {
-					getLog().info("[" + method.getStatusCode() + "] " + method.getStatusText() + " for "
-							+ method.getName() + " to " + method.getPath()
-							+ (method.getQueryString() != null ? "?" + method.getQueryString() : ""));
-				}
-			}
 		}
 		return out;
 	}
