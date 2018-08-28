@@ -16,14 +16,12 @@ import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
-import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -33,6 +31,8 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+
+import com.google.gson.Gson;
 
 /**
  * Given some basic params, publish a Hudson job to a given server
@@ -58,8 +58,7 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 	}
 
 	/**
-	 * @parameter property="hudsonURL"
-	 *            default-value="http://localhost:8080/"
+	 * @parameter property="hudsonURL" default-value="http://localhost:8080/"
 	 */
 	private String hudsonURL = "http://localhost:8080/";
 
@@ -711,13 +710,11 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 		return error;
 	}
 
-	private String[] postXML(String xmlFile, String xmlContents, String jobURL,
-			boolean getErrorMessage) {
+	private String[] postXML(String xmlFile, String xmlContents, String jobURL, boolean getErrorMessage) {
 		return postXML(new File(xmlFile), xmlContents, jobURL, getErrorMessage);
 	}
 
-	private String[] postXML(File xmlFile, String xmlContents, String jobURL,
-			boolean getErrorMessage) {
+	private String[] postXML(File xmlFile, String xmlContents, String jobURL, boolean getErrorMessage) {
 		int resultCode = -1;
 		String responseBody = "";
 		PostMethod post = new PostMethod(jobURL);
@@ -740,8 +737,7 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 		}
 		if (xmlFile != null) {
 			try {
-				post.setRequestEntity(new InputStreamRequestEntity(
-						new FileInputStream(xmlFile), xmlFile.length()));
+				post.setRequestEntity(new InputStreamRequestEntity(new FileInputStream(xmlFile), xmlFile.length()));
 			} catch (FileNotFoundException e) {
 				getLog().error("File not found: " + xmlFile);
 				e.printStackTrace();
@@ -751,17 +747,40 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 			try {
 				throw new MojoExecutionException("Error writing to " + xmlFile);
 			} catch (MojoExecutionException e) {
-				getLog().error(
-						"Error writing to " + xmlFile + " in postXML() !");
+				getLog().error("Error writing to " + xmlFile + " in postXML() !");
 				e.printStackTrace();
 			}
 		}
+
 		// Specify content type and encoding; default to ISO-8859-1
 		post.setRequestHeader("Content-type", "text/xml; charset=ISO-8859-1");
 
 		if (client == null) {
 			client = getHttpClient(username, password);
 		}
+
+		// System.out.println("Issue crumb from: " + hudsonURL + "crumbIssuer/api/json");
+		HttpMethod method = new GetMethod(hudsonURL + "crumbIssuer/api/json");
+		method.setDoAuthentication(true);
+		try {
+			client.executeMethod(method);
+			if (method.getStatusCode() != 404) {
+				String crumbResponse = null;
+				try {
+					crumbResponse = method.getResponseBodyAsString();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+				CrumbJson crumbJson = new Gson().fromJson(crumbResponse, CrumbJson.class);
+				// add crumb to post request to avoid 403
+				post.addRequestHeader(crumbJson.crumbRequestField, crumbJson.crumb);
+			} else {
+				getLog().warn("crumbIssuer for cross site request forgery (CSRF) protection is not enabled in this Jenkins. See https://wiki.jenkins.io/display/JENKINS/CSRF+Protection");
+			}
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+
 		try {
 			resultCode = client.executeMethod(post);
 			if (getErrorMessage) {
@@ -837,6 +856,13 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 		return jobNames.toArray(new String[jobNames.size()]);
 	}
 
+	// helper construct to deserialize crumb json into strings
+	// https://stackoverflow.com/questions/16738441/how-to-request-for-crumb-issuer-for-jenkins/18360897
+	public static class CrumbJson {
+		public String crumb;
+		public String crumbRequestField;
+	}
+
 	// dom.selectSingleNode("/project/scm/locations/hudson.scm.SubversionSCM_-ModuleLocation[1]/remote")
 	public String listJobsOnServer(String url, String pattern) throws Exception {
 		HttpClient client = getHttpClient(username, password);
@@ -887,14 +913,12 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 	}
 
 	// for a given job name, return its config.xml as a Document
-	public Document getJobConfigXML(String name, HttpClient client)
-			throws Exception {
+	public Document getJobConfigXML(String name, HttpClient client) throws Exception {
 		return getXML(hudsonURL + "job/" + name + "/config.xml", client);
 	}
 
 	// for a given URL, return an XML Document
-	public Document getXML(String URL, HttpClient client) throws URIException,
-			IOException {
+	public Document getXML(String URL, HttpClient client) throws URIException, IOException {
 		if (client == null) {
 			client = getHttpClient(username, password);
 		}
@@ -963,8 +987,7 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 		return responseBody;
 	}
 
-	public String getResponseBody(HttpMethod method) throws DocumentException,
-			IOException {
+	public String getResponseBody(HttpMethod method) throws DocumentException, IOException {
 		InputStream is = method.getResponseBodyAsStream();
 		Document dom = null;
 		String out = "";
@@ -975,19 +998,10 @@ public class HudsonJobPublisherMojo extends AbstractMojo {
 			if (verbose) {
 				// 200: OK
 				// 400: Bad Request (job already exists, cannot createItem)
-				if (method.getStatusCode() != 200
-						&& method.getStatusCode() != 400) {
-					getLog().info(
-							"["
-									+ method.getStatusCode()
-									+ "] "
-									+ method.getStatusText()
-									+ " for "
-									+ method.getName()
-									+ " to "
-									+ method.getPath()
-									+ (method.getQueryString() != null ? "?"
-											+ method.getQueryString() : ""));
+				if (method.getStatusCode() != 200 && method.getStatusCode() != 400) {
+					getLog().info("[" + method.getStatusCode() + "] " + method.getStatusText() + " for "
+							+ method.getName() + " to " + method.getPath()
+							+ (method.getQueryString() != null ? "?" + method.getQueryString() : ""));
 				}
 			}
 		}
