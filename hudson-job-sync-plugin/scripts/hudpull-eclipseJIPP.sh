@@ -23,7 +23,7 @@ fi
 
 #defaults
 JENKINS_PATH=${webtoolsJobsPath}/cache/https/ci.eclipse.org/webtools/
-OPTIONS="-DviewFilter=view/webtools_R3_10/"
+OPTIONS="-DviewFilter=view/webtools_CI/"
 regexFilter=".*"
 while [[ "$#" -gt 0 ]]; do
   case $1 in
