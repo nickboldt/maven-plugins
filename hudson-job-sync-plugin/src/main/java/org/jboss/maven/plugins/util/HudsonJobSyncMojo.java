@@ -381,7 +381,7 @@ public class HudsonJobSyncMojo extends AbstractMojo {
 		Calendar cal = Calendar.getInstance();
 		Date now = new Date(cal.getTimeInMillis());
 		java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(now.getTime());
-		return currentTimestamp.toString().replaceAll(" ", "_");
+		return currentTimestamp.toString().replaceAll(" ", "_").replaceAll(":", "_");
 	}
 
 	public void postConfigXML(File configXMLFile, String jobName) throws MojoExecutionException {
